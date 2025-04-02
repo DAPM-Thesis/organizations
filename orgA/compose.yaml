@@ -16,14 +16,14 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092 # external (i.e. for consumers+producers) communication access point. Unlike ZooKeeper, PLAINTEXT_HOST no longer needs to be specified. PLAINTEXT Must be consistent across brokers of the cluster
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # unencrypted broker communication for replication. Must be consistent across cluster.
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LOG_DIRS: /src/main/java/resources/kafkametadata # where necessary logs/messages/metadata is stored [happens hautomatically]
+      KAFKA_LOG_DIRS: /src/main/java/resources/kafkametadata # where necessary logs/messages/metadata is stored [happens automatically]
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # automatically create topics when necessary
     volumes:
       - kafka_data: /src/main/java/resources/kafkametadata # where kafka persists logs/metadata/messages are retrieved from when the container restarts (e.g. after failure)
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui
+    container_name: kafka-ui-A
     restart: always
     depends_on:
       - kafka
