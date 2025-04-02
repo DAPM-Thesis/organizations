@@ -1,1 +1,33 @@
 services:
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-B # named to fit organization
+    restart: always
+    ports:
+      - "9094:9092" # for internal communication in Docker
+      - "29094:29092" # for external communication
+
+    environment:
+      KAFKA_BROKER_ID: 2 # each broker in the cluster must have a unique ID; unlike with ZooKeeper, ID must be explicit in KRaft
+      KAFKA_PROCESS_ROLES: broker # Each process must specify whether it is a broker, controller or both. Controllers are responsible for leader election. There must be an uneven number of controllers in a cluster to ensure a majority vote.
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093 # list the [kafka_broker_id]@[IP]:[Port] of every controller in the cluster. orgA's process is a controller so we write it here.
+      KAFKA_LISTENERS: PLAINTEXT://kafka-B:9092 # PLAINTEXT must be consistent across brokers on the cluster. Since orgB's process is just a broker (not a controller), it does not specify the controller IP and port.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29094 # external (i.e. for consumers+producers) communication access point. Unlike ZooKeeper, PLAINTEXT_HOST no longer needs to be specified. PLAINTEXT Must be consistent across brokers of the cluster
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # unencrypted broker communication for replication. Must be consistent across cluster.
+      KAFKA_LOG_DIRS: /src/main/java/resources/kafkametadata # where necessary logs/messages/metadata is stored [happens hautomatically]
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # automatically create topics when necessary
+    volumes:
+      - kafka_data: /src/main/java/resources/kafkametadata # where kafka persists logs/metadata/messages are retrieved from when the container restarts (e.g. after failure)
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui-B
+    restart: always
+    depends_on:
+      - kafka
+    ports:
+      - "3001:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-A:9092,kafka-B:9094
