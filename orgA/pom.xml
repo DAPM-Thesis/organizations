@@ -58,7 +58,7 @@
         <dependency>
             <groupId>com.github.DAPM-Thesis</groupId>
             <artifactId>dapm-thesis</artifactId>
-            <version>v1.0.0</version>
+            <version>v1.0.3</version>
         </dependency>
     </dependencies>
 
