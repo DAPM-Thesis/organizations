@@ -9,13 +9,13 @@ services:
       - "29094:29092" # for external communication
 
     environment:
-      KAFKA_BROKER_ID: 2 # each broker in the cluster must have a unique ID; unlike with ZooKeeper, ID must be explicit in KRaft
-      KAFKA_PROCESS_ROLES: broker # Each process must specify whether it is a broker, controller or both. Controllers are responsible for leader election. There must be an uneven number of controllers in a cluster to ensure a majority vote.
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-A:9093 # list the [kafka_broker_id]@[IP]:[Port] of every controller in the cluster. orgA's process is a controller so we write it here.
-      KAFKA_LISTENERS: PLAINTEXT://kafka-B:9092 # PLAINTEXT must be consistent across brokers on the cluster. Since orgB's process is just a broker (not a controller), it does not specify the controller IP and port.
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092,PLAINTEXT_HOST://kafka-A:9093 # external (i.e. for consumers+producers) communication access point. Unlike ZooKeeper, PLAINTEXT_HOST no longer needs to be specified. PLAINTEXT Must be consistent across brokers of the cluster
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # unencrypted broker communication for replication. Must be consistent across cluster.
+      KAFKA_NODE_ID: 2 # each broker in the cluster must have a unique ID; unlike with ZooKeeper, ID must be explicit in KRaft
+      KAFKA_PROCESS_ROLES: 'broker' # Each process must specify whether it is a broker, controller or both. Controllers are responsible for leader election. There must be an uneven number of controllers in a cluster to ensure a majority vote.
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-A:9093' # list the [kafka_broker_id]@[IP]:[Port] of every controller in the cluster. orgA's process is a controller so we write it here.
+      KAFKA_LISTENERS: BROKER://kafka-B:9092,EXTERNAL://kafka-B:29092 # BROKER must be consistent across brokers on the cluster. Since orgB's process is just a broker (not a controller), it does not specify the controller IP and port.
+      KAFKA_ADVERTISED_LISTENERS: BROKER://kafka-B:9092,EXTERNAL://kafka-B:29092 # external (i.e. for consumers+producers) communication access point. Unlike ZooKeeper, PLAINTEXT_HOST no longer needs to be specified. PLAINTEXT Must be consistent across brokers of the cluster
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER # unencrypted broker communication for replication. Must be consistent across cluster.
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LOG_DIRS: /var/lib/kafka/data # where necessary logs/messages/metadata is stored [happens automatically]
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # automatically create topics when necessary

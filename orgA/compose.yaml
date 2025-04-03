@@ -9,14 +9,15 @@ services:
       - "29092:29092" # for external communication
 
     environment:
-      KAFKA_BROKER_ID: 1 # each broker in the cluster must have a unique ID; unlike with ZooKeeper, ID must be explicit in KRaft
-      KAFKA_PROCESS_ROLES: broker,controller # Each process must specify whether it is a broker, controller or both. Controllers are responsible for leader election. There must be an uneven number of controllers in a cluster to ensure a majority vote.
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093 # list the [kafka_broker_id]@[IP]:[Port] of every controller. Since this is currently the only controller, we only write one such shebang - and can use localhost.
-      KAFKA_LISTENERS: PLAINTEXT://kafka-A:9092,CONTROLLER://kafka-A:9093 # PLAINTEXT must be consistent across brokers on the cluster.
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092 # external (i.e. for consumers+producers) communication access point. Unlike ZooKeeper, PLAINTEXT_HOST no longer needs to be specified. PLAINTEXT Must be consistent across brokers of the cluster
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # unencrypted broker communication for replication. Must be consistent across cluster.
+      KAFKA_NODE_ID: 1 # each broker in the cluster must have a unique ID; unlike with ZooKeeper, ID must be explicit in KRaft
+      KAFKA_PROCESS_ROLES: 'controller,broker' # Each process must specify whether it is a broker, controller or both. Controllers are responsible for leader election. There must be an uneven number of controllers in a cluster to ensure a majority vote.
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@localhost:9093' # list the [kafka_broker_id]@[IP]:[Port] of every controller. Since this is currently the only controller, we only write one such shebang - and can use localhost.
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: BROKER://kafka-A:9092,EXTERNAL://kafka-A:29092,CONTROLLER://kafka-A:9093 # PLAINTEXT must be consistent across brokers on the cluster.
+      KAFKA_ADVERTISED_LISTENERS: BROKER://localhost:29092 # external (i.e. for consumers+producers) communication access point. Unlike ZooKeeper, PLAINTEXT_HOST no longer needs to be specified. PLAINTEXT Must be consistent across brokers of the cluster
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER # unencrypted broker communication for replication. Must be consistent across cluster.
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LOG_DIRS: /var/lib/kafka/data # where necessary logs/messages/metadata is stored [happens automatically]
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data' # where necessary logs/messages/metadata is stored [happens automatically]
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # automatically create topics when necessary
       CLUSTER_ID: f78e1d52-a284-462c-bc3c-57207fb82d8b # UUID that must be same for all processes (brokers/controllers) over the cluster
     volumes:
