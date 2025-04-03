@@ -1,36 +1,47 @@
+networks:
+  kafka-cluster:
+    name: kafka-cluster
+    external: true
+    driver: bridge
+
 services:
-
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    container_name: kafka-A # named to fit organization
-    restart: always
+  kafka-A:
+    hostname: kafka-A
+    container_name: kafka-A
+    networks:
+      - kafka-cluster
+    image: apache/kafka-native
     ports:
-      - "9092:9092" # for internal communication in Docker
-      - "29092:29092" # for external communication
-
+      - "9092:9092"
     environment:
-      KAFKA_NODE_ID: 1 # each broker in the cluster must have a unique ID; unlike with ZooKeeper, ID must be explicit in KRaft
-      KAFKA_PROCESS_ROLES: 'controller,broker' # Each process must specify whether it is a broker, controller or both. Controllers are responsible for leader election. There must be an uneven number of controllers in a cluster to ensure a majority vote.
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@localhost:9093' # list the [kafka_broker_id]@[IP]:[Port] of every controller. Since this is currently the only controller, we only write one such shebang - and can use localhost.
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,BROKER:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_LISTENERS: BROKER://kafka-A:9092,EXTERNAL://kafka-A:29092,CONTROLLER://kafka-A:9093 # PLAINTEXT must be consistent across brokers on the cluster.
-      KAFKA_ADVERTISED_LISTENERS: BROKER://localhost:29092 # external (i.e. for consumers+producers) communication access point. Unlike ZooKeeper, PLAINTEXT_HOST no longer needs to be specified. PLAINTEXT Must be consistent across brokers of the cluster
-      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER # unencrypted broker communication for replication. Must be consistent across cluster.
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka-A:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LOG_DIRS: '/var/lib/kafka/data' # where necessary logs/messages/metadata is stored [happens automatically]
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # automatically create topics when necessary
-      CLUSTER_ID: f78e1d52-a284-462c-bc3c-57207fb82d8b # UUID that must be same for all processes (brokers/controllers) over the cluster
-    volumes:
-      - /var/lib/kafka/data # where kafka persists logs/metadata/messages are retrieved from when the container restarts (e.g. after failure)
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      CLUSTER_ID: f78e1d52-a284-462c-bc3c-57207fb82d8b
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui-A
-    restart: always
-    depends_on:
-      - kafka
+    networks:
+      - kafka-cluster
+    image: kafbat/kafka-ui:main
     ports:
-      - "3000:8080"
+      - 8080:8080
     environment:
+      DYNAMIC_CONFIG_ENABLED: "true"
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-A:9092
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-A:9093
+    depends_on:
+      - kafka-A
+
