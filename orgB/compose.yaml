@@ -28,20 +28,19 @@ services:
       # Listener to use for broker-to-broker communication
       KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
 
-      # Required for a single node cluster
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # Cluster ID for all brokers
       CLUSTER_ID: f78e1d52-a284-462c-bc3c-57207fb82d8b
 
-  kafka-ui:
-    networks:
-      - kafka-cluster
-    image: kafbat/kafka-ui:main
-    ports:
-      - 8081:8080
-    environment:
-      DYNAMIC_CONFIG_ENABLED: "true"
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-B:9083
-    depends_on:
-      - kafka-B
+#  kafka-ui:
+#    networks:
+#      - kafka-cluster
+#    image: kafbat/kafka-ui:main
+#    ports:
+#      - 8081:8080
+#    environment:
+#      DYNAMIC_CONFIG_ENABLED: "true"
+#      KAFKA_CLUSTERS_0_NAME: local
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-A:9093, kafka-B:9083
+#    depends_on:
+#      - kafka-B
 
