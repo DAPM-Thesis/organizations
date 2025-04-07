@@ -9,10 +9,10 @@ import pipeline.processingelement.ProcessingElementType;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"controller"})
-public class DemoApplication {
+public class OrgAApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(OrgAApplication.class, args);
 
         String organizationID = "orgA";
 
