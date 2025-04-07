@@ -1,0 +1,19 @@
+networks:
+  kafka-cluster:
+    name: kafka-cluster
+    external: true
+    driver: bridge
+
+services:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    networks:
+      - kafka-cluster
+    restart: always
+    ports:
+      - "3000:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-A:9092,kafka-B:9082
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-1:2181, zookeeper-2:2181
