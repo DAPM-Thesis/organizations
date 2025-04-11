@@ -4,9 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import pipeline.Pipeline;
 import pipeline.PipelineBuilder;
 import pipeline.processingelement.ProcessingElementReference;
 import pipeline.processingelement.ProcessingElementType;
+import pipeline.service.PipelineExecutionService;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"controller", "pipeline", "communication"})
@@ -15,20 +17,24 @@ public class OrgAApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(OrgAApplication.class, args);
 
-        String organizationID = "orgA";
+        String orgAID = "orgA";
+        String orgBID = "orgB";
 
         // Currently the processElementID's don't matter
-        ProcessingElementReference sourceRef = new ProcessingElementReference(organizationID, 1, ProcessingElementType.SOURCE);
-        ProcessingElementReference operatorRef = new ProcessingElementReference("orgB", 2, ProcessingElementType.OPERATOR);
-        ProcessingElementReference sinkRef = new ProcessingElementReference(organizationID, 3, ProcessingElementType.SINK);
-        PipelineBuilder pipelineBuilder = context.getBean(PipelineBuilder.class);
-        pipelineBuilder.createPipeline(organizationID)
+        ProcessingElementReference sourceRef = new ProcessingElementReference(orgAID, 1, ProcessingElementType.SOURCE);
+        ProcessingElementReference operatorRef = new ProcessingElementReference(orgBID, 2, ProcessingElementType.OPERATOR);
+        ProcessingElementReference sinkRef = new ProcessingElementReference(orgAID, 3, ProcessingElementType.SINK);
+
+        PipelineBuilder configService = context.getBean(PipelineBuilder.class);
+        Pipeline pipeline = configService.createPipeline(orgAID)
                 .addProcessingElement(sourceRef)
                 .addProcessingElement(operatorRef)
                 .addProcessingElement(sinkRef)
                 .connect(sourceRef, operatorRef)
-                .connect(operatorRef, sinkRef);
+                .connect(operatorRef, sinkRef)
+                .getCurrentPipeline();
 
-        pipelineBuilder.start();
+        PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
+        executionService.start(pipeline);
     }
 }
