@@ -11,7 +11,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 @RestController
-@RequestMapping("/{organizationID}/{processElementID}")
+@RequestMapping("/pipelineBuilder")
 public class ProcessElementController {
     // Currently no checks are performed on organizationID and processElementID
 
@@ -19,21 +19,23 @@ public class ProcessElementController {
     EventAlgorithmB eventAlgorithmB = new EventAlgorithmB();
     EventOperatorB operatorB = new EventOperatorB(eventAlgorithmB);
 
+    private String orgABroker = "localhost:29082";
+
     @PostMapping("/publisher/broker/{broker}/topic/{topic}")
-    public void connectPublisher(@PathVariable String organizationID, @PathVariable String processElementID, @PathVariable String broker, @PathVariable String topic) {
+    public void connectPublisher(@PathVariable String broker, @PathVariable String topic) {
         String decodedTopic = URLDecoder.decode(topic, StandardCharsets.UTF_8);
         String decodedBroker = URLDecoder.decode(broker, StandardCharsets.UTF_8);
         operatorB.registerProducer(decodedTopic, decodedBroker);
     }
 
     @PostMapping("/subscriber/broker/{broker}/topic/{topic}")
-    public void connectSubscriber(@PathVariable String organizationID, @PathVariable String processElementID, @PathVariable String broker, @PathVariable String topic) {
+    public void connectSubscriber(@PathVariable String broker, @PathVariable String topic) {
         String decodedTopic = URLDecoder.decode(topic, StandardCharsets.UTF_8);
         String decodedBroker = URLDecoder.decode(broker, StandardCharsets.UTF_8);
         operatorB.registerConsumer(decodedTopic, decodedBroker);
     }
 
     @PostMapping("/start")
-    public void startSource(@PathVariable String organizationID, @PathVariable String processElementID) {
+    public void startSource() {
     }
 }

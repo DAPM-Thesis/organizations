@@ -19,6 +19,8 @@ public class OrgAApplication {
 
         String orgAID = "orgA";
         String orgBID = "orgB";
+        String orgAHost = "http://localhost:8082";
+        String orgBHost = "http://localhost:8083";
 
         // Currently the processElementID's don't matter
         ProcessingElementReference sourceRef = new ProcessingElementReference(orgAID, 1, ProcessingElementType.SOURCE);
