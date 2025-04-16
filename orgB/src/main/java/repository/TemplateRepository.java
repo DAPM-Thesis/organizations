@@ -2,6 +2,7 @@ package repository;
 
 import pipeline.processingelement.ProcessingElement;
 import pipeline.processingelement.operator.Operator;
+import templates.EventOperatorB;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class TemplateRepository {
 
     public TemplateRepository() {
         templates = new HashMap<>();
-        templates.put("SimpleOperator", Operator.class);
+        templates.put("SimpleOperator", EventOperatorB.class);
     }
 
     public <T extends ProcessingElement> T createInstanceFromTemplate(String templateID) {

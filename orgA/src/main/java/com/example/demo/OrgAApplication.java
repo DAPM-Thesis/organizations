@@ -23,17 +23,19 @@ public class OrgAApplication {
         String orgBHost = "http://localhost:8083";
 
         // Currently the processElementID's don't matter
-        ProcessingElementReference sourceRef = new ProcessingElementReference(orgAID, 1, ProcessingElementType.SOURCE);
-        ProcessingElementReference operatorRef = new ProcessingElementReference(orgBID, 2, ProcessingElementType.OPERATOR);
-        ProcessingElementReference sinkRef = new ProcessingElementReference(orgAID, 3, ProcessingElementType.SINK);
+        ProcessingElementReference sourceRef = new ProcessingElementReference(orgAID, orgAHost, "SimpleSource", 1, ProcessingElementType.SOURCE);
+        ProcessingElementReference operatorRef = new ProcessingElementReference(orgBID, orgBHost, "SimpleOperator", 1, ProcessingElementType.OPERATOR);
+        ProcessingElementReference sinkRef = new ProcessingElementReference(orgAID, orgAHost, "SimpleSink", 1, ProcessingElementType.SINK);
 
         PipelineBuilder configService = context.getBean(PipelineBuilder.class);
-        Pipeline pipeline = configService.createPipeline(orgAID)
+
+        Pipeline pipeline =  configService.createPipeline(orgAID)
                 .addProcessingElement(sourceRef)
                 .addProcessingElement(operatorRef)
                 .addProcessingElement(sinkRef)
                 .connect(sourceRef, operatorRef)
                 .connect(operatorRef, sinkRef)
+                .configure()
                 .getCurrentPipeline();
 
         PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
