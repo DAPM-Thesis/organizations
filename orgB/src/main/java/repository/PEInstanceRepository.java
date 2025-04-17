@@ -15,11 +15,12 @@ public class PEInstanceRepository {
         instances = new HashMap<>();
     }
 
-    public String storeInstanceMetaData(String templateID, String brokerURL, String topic, boolean isProducer) {
+    public String storeInstanceMetaData(String templateID, int instanceNumber, String brokerURL, String topic, boolean isProducer) {
         String instanceMetaDataID = "instance-metadata" + UUID.randomUUID();
         instanceMetaData.put(instanceMetaDataID, new InstanceMetaData(
                 instanceMetaDataID,
                 templateID,
+                instanceNumber,
                 brokerURL,
                 topic,
                 isProducer,
@@ -40,6 +41,7 @@ public class PEInstanceRepository {
                 InstanceMetaData updated = new InstanceMetaData(
                         metadata.instanceDetailID(),
                         metadata.templateID(),
+                        metadata.instanceNumber(),
                         metadata.brokerURL(),
                         metadata.topic(),
                         metadata.isProducer(),

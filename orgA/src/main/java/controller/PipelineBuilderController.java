@@ -29,7 +29,7 @@ public class PipelineBuilderController {
     public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID, @PathVariable int instanceNumber) {
         String decodedTemplateID = decode(templateID);
         String topic = createTopic();
-        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, orgABroker, topic, true);
+        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, orgABroker, topic, true);
 
         Source<Message> source =  templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if(source != null) {
@@ -50,7 +50,7 @@ public class PipelineBuilderController {
         String decodedTemplateID = decode(templateID);
         String decodedTopic = decode(topic);
         String decodedBroker = decode(broker);
-        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, decodedBroker, decodedTopic, false);
+        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, decodedBroker, decodedTopic, false);
 
         return ResponseEntity.ok(new PEInstanceResponse.Builder(decodedTemplateID, instanceNumber)
                 .instanceMetaDataID(instanceMetaDataID)
@@ -61,7 +61,7 @@ public class PipelineBuilderController {
     public ResponseEntity<PEInstanceResponse> storeOperatorProducer(@PathVariable String templateID, @PathVariable int instanceNumber) {
         String decodedTemplateID = decode(templateID);
         String topic = createTopic();
-        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, orgABroker, topic, true);
+        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, orgABroker, topic, true);
 
         return ResponseEntity.ok(new PEInstanceResponse.Builder(decodedTemplateID, instanceNumber)
                 .broker(orgABroker)
@@ -94,7 +94,7 @@ public class PipelineBuilderController {
         String decodedTemplateID = decode(templateID);
         String decodedTopic = decode(topic);
         String decodedBroker = decode(broker);
-        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, decodedBroker, decodedTopic, false);
+        String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, decodedBroker, decodedTopic, false);
 
         return ResponseEntity.ok(new PEInstanceResponse.Builder(decodedTemplateID, instanceNumber)
                 .instanceMetaDataID(instanceMetaDataID)
@@ -118,10 +118,10 @@ public class PipelineBuilderController {
         return ResponseEntity.badRequest().body(null);
     }
 
-    @PostMapping("/start/instanceIDS/{instanceID}")
+    @PostMapping("/start/instance/{instanceID}")
     public ResponseEntity<Void> startSource(@PathVariable String instanceID) {
-            Source<Message> source =  peInstanceRepository.getInstance(instanceID);
-            source.start();
+        Source<Message> source =  peInstanceRepository.getInstance(instanceID);
+        source.start();
         return ResponseEntity.ok().build();
     }
 

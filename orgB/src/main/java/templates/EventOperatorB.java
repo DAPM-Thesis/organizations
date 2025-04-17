@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class EventOperatorB extends SimpleOperator<Event> {
 
-    public EventOperatorB(Algorithm<Message, Event> algorithm) {
+    public EventOperatorB(EventAlgorithmB algorithm) {
         super(algorithm);
     }
 
