@@ -2,6 +2,7 @@ package controller;
 
 import communication.API.PEInstanceResponse;
 import communication.message.Message;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/pipelineBuilder")
 public class PipelineBuilderController {
-    private final String orgABroker = "localhost:29092";
+    @Value("${organization.broker.orgA}")
+    private String orgABroker;
+
     private final TemplateRepository templateRepository = new TemplateRepository();
     private final PEInstanceRepository peInstanceRepository = new PEInstanceRepository();
 
@@ -122,7 +125,10 @@ public class PipelineBuilderController {
     @PostMapping("/start/instance/{instanceID}")
     public ResponseEntity<Void> startSource(@PathVariable String instanceID) {
         Source<Message> source = peInstanceRepository.getInstance(instanceID);
-        source.start();
-        return ResponseEntity.ok().build();
+        if (source != null) {
+            source.start();
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 }

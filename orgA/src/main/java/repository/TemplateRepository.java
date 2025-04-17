@@ -20,14 +20,12 @@ public class TemplateRepository {
 
     public <T extends ProcessingElement> T createInstanceFromTemplate(String templateID) {
         Class<? extends ProcessingElement> template = templates.get(templateID);
-        if (template != null) {
+        if(template == null) {throw new RuntimeException("No template found for template ID: " + templateID); }
             try {
                 return (T) template.getDeclaredConstructor().newInstance();
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-        }
-        return null;
     }
 }

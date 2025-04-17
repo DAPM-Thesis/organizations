@@ -22,7 +22,7 @@ public class TemplateRepository {
     // TODO: make it more generic later
     public <T extends ProcessingElement> T createInstanceFromTemplate(String templateID) {
         Class<? extends ProcessingElement> template = templates.get(templateID);
-        if (template != null) {
+        if(template == null) { throw new RuntimeException("Template " + templateID + " not found"); }
             try {
                 EventAlgorithmB algorithm = new EventAlgorithmB();
                 return (T) template.getDeclaredConstructor(EventAlgorithmB.class).newInstance(algorithm);
@@ -30,7 +30,5 @@ public class TemplateRepository {
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-        }
-        return null;
     }
 }
