@@ -22,7 +22,7 @@ public class TemplateRepository {
     // TODO: make it more generic later
     public <T extends ProcessingElement> T createInstanceFromTemplate(String templateID) {
         Class<? extends ProcessingElement> template = templates.get(templateID);
-        if(template != null) {
+        if (template != null) {
             try {
                 EventAlgorithmB algorithm = new EventAlgorithmB();
                 return (T) template.getDeclaredConstructor(EventAlgorithmB.class).newInstance(algorithm);

@@ -13,6 +13,8 @@ import pipeline.processingelement.Source;
 import pipeline.processingelement.operator.Operator;
 import repository.PEInstanceRepository;
 import repository.TemplateRepository;
+import utils.IDGenerator;
+import utils.JsonUtil;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -28,12 +30,12 @@ public class PipelineBuilderController {
 
     @PostMapping("/source/templateID/{templateID}/instanceNumber/{instanceNumber}")
     public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID, @PathVariable int instanceNumber) {
-        String decodedTemplateID = decode(templateID);
-        String topic = createTopic();
+        String decodedTemplateID = JsonUtil.decode(templateID);
+        String topic = IDGenerator.generateTopic();
         String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, orgBBroker, topic, true);
 
-        Source<Message> source =  templateRepository.createInstanceFromTemplate(decodedTemplateID);
-        if(source != null) {
+        Source<Message> source = templateRepository.createInstanceFromTemplate(decodedTemplateID);
+        if (source != null) {
             source.registerProducer(orgBBroker, topic);
             String instanceID = peInstanceRepository.storeInstance(source, new String[]{instanceMetaDataID});
 
@@ -48,9 +50,9 @@ public class PipelineBuilderController {
 
     @PostMapping("/operator/consumer/templateID/{templateID}/instanceNumber/{instanceNumber}/broker/{broker}/topic/{topic}")
     public ResponseEntity<PEInstanceResponse> storeOperatorConsumer(@PathVariable String templateID, @PathVariable int instanceNumber, @PathVariable String broker, @PathVariable String topic) {
-        String decodedTemplateID = decode(templateID);
-        String decodedTopic = decode(topic);
-        String decodedBroker = decode(broker);
+        String decodedTemplateID = JsonUtil.decode(templateID);
+        String decodedTopic = JsonUtil.decode(topic);
+        String decodedBroker = JsonUtil.decode(broker);
         String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, decodedBroker, decodedTopic, false);
 
         return ResponseEntity.ok(new PEInstanceResponse.Builder(decodedTemplateID, instanceNumber)
@@ -60,8 +62,8 @@ public class PipelineBuilderController {
 
     @PostMapping("/operator/producer/templateID/{templateID}/instanceNumber/{instanceNumber}")
     public ResponseEntity<PEInstanceResponse> storeOperatorProducer(@PathVariable String templateID, @PathVariable int instanceNumber) {
-        String decodedTemplateID = decode(templateID);
-        String topic = createTopic();
+        String decodedTemplateID = JsonUtil.decode(templateID);
+        String topic = IDGenerator.generateTopic();
         String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, orgBBroker, topic, true);
 
         return ResponseEntity.ok(new PEInstanceResponse.Builder(decodedTemplateID, instanceNumber)
@@ -73,15 +75,15 @@ public class PipelineBuilderController {
 
     @PostMapping("/operator/templateID/{templateID}/instance/{instanceMetaDataIDS}")
     public ResponseEntity<Void> createOperator(@PathVariable String templateID, @PathVariable("instanceMetaDataIDS") String instanceMetaDataIDS) {
-        String decodedTemplateID = decode(templateID);
-        Operator<Message, Message> operator =  templateRepository.createInstanceFromTemplate(decodedTemplateID);
-        if(operator != null) {
-            String decodedInstanceMetaDataIDS = decode(instanceMetaDataIDS);
+        String decodedTemplateID = JsonUtil.decode(templateID);
+        Operator<Message, Message> operator = templateRepository.createInstanceFromTemplate(decodedTemplateID);
+        if (operator != null) {
+            String decodedInstanceMetaDataIDS = JsonUtil.decode(instanceMetaDataIDS);
             String[] instanceMetaDataIDList = decodedInstanceMetaDataIDS.split(",");
             for (String instanceID : instanceMetaDataIDList) {
                 InstanceMetaData metadata = peInstanceRepository.getInstanceMetaData(instanceID);
-                if(metadata != null) {
-                    if(metadata.isProducer()) operator.registerProducer(metadata.brokerURL(), metadata.topic());
+                if (metadata != null) {
+                    if (metadata.isProducer()) operator.registerProducer(metadata.brokerURL(), metadata.topic());
                     else operator.registerConsumer(metadata.brokerURL(), metadata.topic());
                 }
             }
@@ -93,9 +95,9 @@ public class PipelineBuilderController {
 
     @PostMapping("/sink/templateID/{templateID}/instanceNumber/{instanceNumber}/broker/{broker}/topic/{topic}")
     public ResponseEntity<PEInstanceResponse> storeSinkConsumer(@PathVariable String templateID, @PathVariable int instanceNumber, @PathVariable String broker, @PathVariable String topic) {
-        String decodedTemplateID = decode(templateID);
-        String decodedTopic = decode(topic);
-        String decodedBroker = decode(broker);
+        String decodedTemplateID = JsonUtil.decode(templateID);
+        String decodedTopic = JsonUtil.decode(topic);
+        String decodedBroker = JsonUtil.decode(broker);
         String instanceMetaDataID = peInstanceRepository.storeInstanceMetaData(decodedTemplateID, instanceNumber, decodedBroker, decodedTopic, false);
 
         return ResponseEntity.ok(new PEInstanceResponse.Builder(decodedTemplateID, instanceNumber)
@@ -105,14 +107,14 @@ public class PipelineBuilderController {
 
     @PostMapping("/sink/templateID/{templateID}/instance/{instanceMetaDataIDS}")
     public ResponseEntity<Void> createSink(@PathVariable String templateID, @PathVariable("instanceMetaDataIDS") String instanceMetaDataIDS) {
-        String decodedTemplateID = decode(templateID);
-        Sink sink =  templateRepository.createInstanceFromTemplate(decodedTemplateID);
-        if(sink != null) {
-            String decodedInstanceMetaDataIDS = decode(instanceMetaDataIDS);
+        String decodedTemplateID = JsonUtil.decode(templateID);
+        Sink sink = templateRepository.createInstanceFromTemplate(decodedTemplateID);
+        if (sink != null) {
+            String decodedInstanceMetaDataIDS = JsonUtil.decode(instanceMetaDataIDS);
             String[] instanceMetaDataIDList = decodedInstanceMetaDataIDS.split(",");
             for (String instanceID : instanceMetaDataIDList) {
                 InstanceMetaData metadata = peInstanceRepository.getInstanceMetaData(instanceID);
-                if(metadata != null) {
+                if (metadata != null) {
                     sink.registerConsumer(metadata.brokerURL(), metadata.topic());
                 }
             }
@@ -124,17 +126,9 @@ public class PipelineBuilderController {
 
     @PostMapping("/start/instance/{instanceID}")
     public ResponseEntity<Void> startSource(@PathVariable String instanceID) {
-        Source<Message> source =  peInstanceRepository.getInstance(instanceID);
+        Source<Message> source = peInstanceRepository.getInstance(instanceID);
         source.start();
         return ResponseEntity.ok().build();
-    }
-
-    private String createTopic() {
-        return "Topic-" + UUID.randomUUID();
-    }
-
-    private String decode(String value) {
-        return URLDecoder.decode(value, StandardCharsets.UTF_8);
     }
 }
 

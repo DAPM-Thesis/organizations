@@ -2,6 +2,7 @@ package repository;
 
 import pipeline.processingelement.InstanceMetaData;
 import pipeline.processingelement.ProcessingElement;
+import utils.IDGenerator;
 
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class PEInstanceRepository {
     }
 
     public String storeInstanceMetaData(String templateID, int instanceNumber, String brokerURL, String topic, boolean isProducer) {
-        String instanceMetaDataID = "instance-metadata" + UUID.randomUUID();
+        String instanceMetaDataID = IDGenerator.generateInstanceMetaDataID();
         instanceMetaData.put(instanceMetaDataID, new InstanceMetaData(
                 instanceMetaDataID,
                 templateID,
@@ -33,7 +34,7 @@ public class PEInstanceRepository {
     }
 
     public String storeInstance(ProcessingElement instance, String[] instanceMetaDataIDS) {
-        String instanceID = "instance-" + UUID.randomUUID();
+        String instanceID = IDGenerator.generateInstanceID();
         instances.put(instanceID, instance);
         for (String instanceMetaData : instanceMetaDataIDS) {
             InstanceMetaData metadata = this.instanceMetaData.get(instanceMetaData);
