@@ -27,23 +27,6 @@ public class OrgAApplication {
         String orgAID = "orgA";
         String orgBID = "orgB";
 
-        /*
-        // Currently the processElementID's don't matter
-        ProcessingElementReference sourceRef = new ProcessingElementReference(orgAID, 1, ProcessingElementType.SOURCE);
-        ProcessingElementReference operatorRef = new ProcessingElementReference(orgBID, 2, ProcessingElementType.OPERATOR);
-        ProcessingElementReference sinkRef = new ProcessingElementReference(orgAID, 3, ProcessingElementType.SINK);
-
-        PipelineBuilder configService = context.getBean(PipelineBuilder.class);
-        Pipeline pipeline = configService.createPipeline(orgAID)
-                .addProcessingElement(sourceRef)
-                .addProcessingElement(operatorRef)
-                .addProcessingElement(sinkRef)
-                .connect(sourceRef, operatorRef)
-                .connect(operatorRef, sinkRef)
-                .getCurrentPipeline();
-
-         */
-
         var sourceToken = new ProcessingElementToken("sourceTokenValue", orgAID);
         var operatorToken = new ProcessingElementToken("operatorTokenValue", orgBID);
         var sinkToken = new ProcessingElementToken("sinkTokenValue", orgAID);
@@ -57,8 +40,8 @@ public class OrgAApplication {
                 .addACPE(sourceACPE)
                 .addACPE(operatorACPE)
                 .addACPE(sinkACPE)
-                .connec(sourceACPE, operatorACPE)
-                .connec(operatorACPE, sinkACPE)
+                .connect(sourceACPE, operatorACPE)
+                .connect(operatorACPE, sinkACPE)
                 .getCurrentPipeline();
 
         PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
