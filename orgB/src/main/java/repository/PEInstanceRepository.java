@@ -1,11 +1,13 @@
 package repository;
 
+import org.springframework.stereotype.Repository;
 import pipeline.processingelement.InstanceMetaData;
 import pipeline.processingelement.ProcessingElement;
 import utils.IDGenerator;
 
 import java.util.*;
 
+@Repository
 public class PEInstanceRepository {
 
     public Map<String, InstanceMetaData> instanceMetaData;

@@ -1,5 +1,6 @@
 package repository;
 
+import org.springframework.stereotype.Repository;
 import pipeline.processingelement.ProcessingElement;
 import templates.SinkA;
 import templates.SourceA;
@@ -8,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Repository
 public class TemplateRepository {
 
     private Map<String, Class<? extends ProcessingElement>> templates;

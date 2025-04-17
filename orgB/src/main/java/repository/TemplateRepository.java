@@ -1,15 +1,15 @@
 package repository;
 
+import org.springframework.stereotype.Repository;
 import pipeline.processingelement.ProcessingElement;
-import pipeline.processingelement.operator.Operator;
 import templates.EventAlgorithmB;
 import templates.EventOperatorB;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Repository
 public class TemplateRepository {
 
     private Map<String, Class<? extends ProcessingElement>> templates;
