@@ -1,0 +1,28 @@
+{
+  "processing elements":[
+    { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "SimpleSource", "inputs": [], "output": "Event", "instanceNumber": 1 },
+    { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "SimpleOperator",  "inputs": ["Event"],  "output": "Event",  "instanceNumber": 1 },
+    { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "SimpleSink",  "inputs": ["Event"],  "output": null,  "instanceNumber": 1 }
+  ],
+
+  "channels": [
+    {
+      "publisher": { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "SimpleSource", "inputs": [], "output": "Event", "instanceNumber": 1 },
+      "subscribers": [
+        {
+          "processing element": { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "SimpleOperator", "inputs": ["Event"], "output": "Event", "instanceNumber": 1 },
+          "portNumber": 1
+        }
+      ]
+    },
+    {
+      "publisher": { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "SimpleOperator", "inputs": ["Event"], "output": "Event", "instanceNumber": 1 },
+      "subscribers": [
+        {
+          "processing element": { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "SimpleSink", "inputs": ["Event"], "output": null, "instanceNumber": 1 },
+          "portNumber": 1
+        }
+      ]
+    }
+  ]
+}
