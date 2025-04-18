@@ -76,15 +76,17 @@ public class PipelineBuilderController {
     }
 
     @PostMapping("/operator/templateID/{templateID}/instance/{instanceMetaDataIDS}")
-    public ResponseEntity<Void> createOperator(@PathVariable String templateID, @PathVariable("instanceMetaDataIDS") String[] instanceMetaDataIDList) {
+    public ResponseEntity<Void> createOperator(@PathVariable String templateID, @PathVariable("instanceMetaDataIDS") String instanceMetaDataIDS) {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Operator<Message, Message> operator = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (operator != null) {
+            String decodedInstanceMetaDataIDS = JsonUtil.decode(instanceMetaDataIDS);
+            String[] instanceMetaDataIDList = decodedInstanceMetaDataIDS.split(",");
             for (String instanceID : instanceMetaDataIDList) {
                 InstanceMetaData metadata = peInstanceRepository.getInstanceMetaData(instanceID);
                 if (metadata != null) {
-                    if (metadata.isProducer()) operator.registerProducer(metadata.brokerURL(), metadata.topic());
-                    else operator.registerConsumer(metadata.topic(), metadata.brokerURL());
+                    if (!metadata.isProducer()) operator.registerConsumer(metadata.brokerURL(), metadata.topic());
+                    else operator.registerProducer(metadata.brokerURL(), metadata.topic());
                 }
             }
             peInstanceRepository.storeInstance(operator, instanceMetaDataIDList);

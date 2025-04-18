@@ -85,8 +85,8 @@ public class PipelineBuilderController {
             for (String instanceID : instanceMetaDataIDList) {
                 InstanceMetaData metadata = peInstanceRepository.getInstanceMetaData(instanceID);
                 if (metadata != null) {
-                    if (metadata.isProducer()) operator.registerProducer(metadata.brokerURL(), metadata.topic());
-                    else operator.registerConsumer(metadata.brokerURL(), metadata.topic());
+                    if (!metadata.isProducer()) operator.registerConsumer(metadata.brokerURL(), metadata.topic());
+                    else operator.registerProducer(metadata.brokerURL(), metadata.topic());
                 }
             }
             peInstanceRepository.storeInstance(operator, instanceMetaDataIDList);
