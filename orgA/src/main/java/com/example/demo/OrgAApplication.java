@@ -40,9 +40,9 @@ public class OrgAApplication {
 
         PipelineDraft pipelineDraft = (new DraftParser()).deserialize(contents);
 
-        PipelineBuilder configService = context.getBean(PipelineBuilder.class);
+        PipelineBuilder pipelineBuilder = context.getBean(PipelineBuilder.class);
 
-        Pipeline pipeline =  configService.buildPipeline(orgID, pipelineDraft);
+        Pipeline pipeline =  pipelineBuilder.buildPipeline(orgID, pipelineDraft);
 
         PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
         executionService.start(pipeline);
