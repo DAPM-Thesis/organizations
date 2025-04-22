@@ -2,7 +2,6 @@ package repository;
 
 import org.springframework.stereotype.Repository;
 import pipeline.processingelement.ProcessingElement;
-import templates.EventAlgorithmB;
 import templates.EventOperatorB;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,8 +23,7 @@ public class TemplateRepository {
         Class<? extends ProcessingElement> template = templates.get(templateID);
         if(template == null) { throw new RuntimeException("Template " + templateID + " not found"); }
             try {
-                EventAlgorithmB algorithm = new EventAlgorithmB();
-                return (T) template.getDeclaredConstructor(EventAlgorithmB.class).newInstance(algorithm);
+                return (T) template.getDeclaredConstructor().newInstance();
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);

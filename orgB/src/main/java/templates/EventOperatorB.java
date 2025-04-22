@@ -1,6 +1,5 @@
 package templates;
 
-import algorithm.Algorithm;
 import communication.message.Message;
 import communication.message.impl.event.Event;
 import pipeline.processingelement.operator.SimpleOperator;
@@ -10,10 +9,6 @@ import java.util.Map;
 
 public class EventOperatorB extends SimpleOperator<Event> {
 
-    public EventOperatorB(EventAlgorithmB algorithm) {
-        super(algorithm);
-    }
-
     @Override
     protected Map<Class<? extends Message>, Integer> setConsumedInputs() {
         Map<Class<? extends Message>, Integer> map = new HashMap<>();
@@ -21,4 +16,9 @@ public class EventOperatorB extends SimpleOperator<Event> {
         return map;
     }
 
+    @Override
+    protected Event process(Message message) {
+        System.out.println(this.getClass().getSimpleName() + " applied.");
+        return (Event) message;
+    }
 }
