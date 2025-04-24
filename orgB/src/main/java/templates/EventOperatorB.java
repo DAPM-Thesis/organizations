@@ -17,8 +17,8 @@ public class EventOperatorB extends SimpleOperator<Event> {
     }
 
     @Override
-    protected Event process(Message message) {
-        System.out.println(this.getClass().getSimpleName() + " applied.");
+    protected Event process(Message message, int portNumber) {
+        System.out.println(this.getClass().getSimpleName() + " applied on " + message + " from port " + portNumber);
         return (Event) message;
     }
 }

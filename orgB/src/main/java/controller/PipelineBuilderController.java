@@ -1,7 +1,8 @@
 package controller;
 
 import communication.API.PEInstanceResponse;
-import communication.config.ChannelConfig;
+import communication.config.ConsumerConfig;
+import communication.config.ProducerConfig;
 import communication.message.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -32,48 +33,50 @@ public class PipelineBuilderController {
     @PostMapping("/source/templateID/{templateID}")
     public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID) {
         String decodedTemplateID = JsonUtil.decode(templateID);
-        String topic = IDGenerator.generateTopic();
 
         Source<Message> source = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (source != null) {
-            source.registerProducer(orgBBroker, topic);
+            String topic = IDGenerator.generateTopic();
+            ProducerConfig producerConfig = new ProducerConfig(orgBBroker, topic);
+            source.registerProducer(producerConfig);
             String instanceID = peInstanceRepository.storeInstance(source);
 
             return ResponseEntity.ok(new PEInstanceResponse
                     .Builder(decodedTemplateID, instanceID)
-                    .channelConfig(new ChannelConfig(orgBBroker, topic))
+                    .producerConfig(producerConfig)
                     .build());
         }
         return ResponseEntity.badRequest().body(null);
     }
 
     @PostMapping("/operator/templateID/{templateID}")
-    public ResponseEntity<PEInstanceResponse> createOperator(@PathVariable String templateID, @RequestBody List<ChannelConfig> channelConfigs) {
+    public ResponseEntity<PEInstanceResponse> createOperator(@PathVariable String templateID, @RequestBody List<ConsumerConfig> consumerConfigs) {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Operator<Message, Message> operator = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (operator != null) {
-            for (ChannelConfig config : channelConfigs) {
-                operator.registerConsumer(config.brokerURL(), config.topic());
+            for (ConsumerConfig config : consumerConfigs) {
+                operator.registerConsumer(config);
             }
             String topic = IDGenerator.generateTopic();
-            operator.registerProducer(orgBBroker, topic);
+            ProducerConfig producerConfig = new ProducerConfig(orgBBroker, topic);
+            operator.registerProducer(producerConfig);
 
             String instanceID = peInstanceRepository.storeInstance(operator);
             return ResponseEntity.ok(new PEInstanceResponse
                     .Builder(decodedTemplateID, instanceID)
-                    .channelConfig(new ChannelConfig(orgBBroker, topic))
+                    .producerConfig(producerConfig)
                     .build());
         }
         return ResponseEntity.badRequest().body(null);
     }
 
     @PostMapping("/sink/templateID/{templateID}")
-    public ResponseEntity<PEInstanceResponse> createSink(@PathVariable String templateID, @RequestBody List<ChannelConfig> channelConfigs) {
+    public ResponseEntity<PEInstanceResponse> createSink(@PathVariable String templateID, @RequestBody List<ConsumerConfig> consumerConfigs) {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Sink sink = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (sink != null) {
-            for (ChannelConfig config : channelConfigs) {
-                sink.registerConsumer(config.brokerURL(), config.topic());
+            for (ConsumerConfig config : consumerConfigs) {
+                sink.registerConsumer(config);
             }
             String instanceID = peInstanceRepository.storeInstance(sink);
             return ResponseEntity.ok(new PEInstanceResponse

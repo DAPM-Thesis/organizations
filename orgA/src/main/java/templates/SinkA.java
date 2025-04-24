@@ -10,7 +10,9 @@ import java.util.Map;
 public class SinkA extends Sink {
 
     @Override
-    public void observe(Message message) { System.out.println(this + " received: " + message); }
+    public void observe(Message message, int portNumber) {
+        System.out.println(this + " received: " + message + " on port " + portNumber);
+    }
 
     @Override
     protected Map<Class<? extends Message>, Integer> setConsumedInputs() {
