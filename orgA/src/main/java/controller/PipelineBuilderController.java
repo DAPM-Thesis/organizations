@@ -4,6 +4,7 @@ import communication.API.PEInstanceResponse;
 import communication.config.ConsumerConfig;
 import communication.config.ProducerConfig;
 import communication.message.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,14 @@ public class PipelineBuilderController {
     @Value("${organization.broker.orgA}")
     private String orgABroker;
 
-    private final TemplateRepository templateRepository = new TemplateRepository();
-    private final PEInstanceRepository peInstanceRepository = new PEInstanceRepository();
+    private final TemplateRepository templateRepository;
+    private final PEInstanceRepository peInstanceRepository;
+
+    @Autowired
+    public PipelineBuilderController(TemplateRepository templateRepository, PEInstanceRepository peInstanceRepository) {
+        this.templateRepository = templateRepository;
+        this.peInstanceRepository = peInstanceRepository;
+    }
 
     @PostMapping("/source/templateID/{templateID}")
     public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID) {
@@ -83,16 +90,6 @@ public class PipelineBuilderController {
             return ResponseEntity.ok(new PEInstanceResponse
                     .Builder(decodedTemplateID, instanceID)
                     .build());
-        }
-        return ResponseEntity.badRequest().body(null);
-    }
-
-    @PutMapping("/start/instance/{instanceID}")
-    public ResponseEntity<Void> startSource(@PathVariable String instanceID) {
-        ProcessingElement processingElement = peInstanceRepository.getInstance(instanceID);
-        if (processingElement != null) {
-            processingElement.start();
-            return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().body(null);
     }

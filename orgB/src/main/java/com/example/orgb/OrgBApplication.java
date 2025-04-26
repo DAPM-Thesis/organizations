@@ -6,7 +6,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controller", "pipeline", "communication"})
+@ComponentScan(basePackages = {"controller", "pipeline", "communication", "repository"})
 public class OrgBApplication {
 
     public static void main(String[] args) {

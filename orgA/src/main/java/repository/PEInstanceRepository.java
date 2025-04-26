@@ -24,4 +24,8 @@ public class PEInstanceRepository {
     public <T extends ProcessingElement> T getInstance(String instanceID) {
         return (T) instances.get(instanceID);
     }
+
+    public void removeInstance(String instanceID) {
+        instances.remove(instanceID);
+    }
 }
