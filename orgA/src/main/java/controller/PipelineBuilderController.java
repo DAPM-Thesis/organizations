@@ -7,6 +7,7 @@ import communication.message.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pipeline.processingelement.ProcessingElement;
 import pipeline.processingelement.Sink;
 import pipeline.processingelement.Source;
 import pipeline.processingelement.operator.Operator;
@@ -88,9 +89,9 @@ public class PipelineBuilderController {
 
     @PutMapping("/start/instance/{instanceID}")
     public ResponseEntity<Void> startSource(@PathVariable String instanceID) {
-        Source<Message> source = peInstanceRepository.getInstance(instanceID);
-        if (source != null) {
-            source.start();
+        ProcessingElement processingElement = peInstanceRepository.getInstance(instanceID);
+        if (processingElement != null) {
+            processingElement.start();
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().body(null);
