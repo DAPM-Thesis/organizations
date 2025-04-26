@@ -1,13 +1,10 @@
 package com.example.demo;
 
+import candidate_validation.*;
 import communication.message.Message;
 import communication.message.impl.event.Event;
 import communication.message.impl.petrinet.PetriNet;
-import draft_validation.ChannelReference;
-import draft_validation.PipelineDraft;
-import draft_validation.ProcessingElementReference;
-import draft_validation.SubscriberReference;
-import draft_validation.parsing.DraftParser;
+import candidate_validation.parsing.CandidateParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,6 +15,7 @@ import pipeline.service.PipelineExecutionService;
 import utils.LogUtil;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -36,11 +34,13 @@ public class OrgAApplication {
             throw new RuntimeException(e);
         }
 
-        PipelineDraft pipelineDraft = (new DraftParser()).deserialize(contents);
+        URI configURI = Paths.get("orgA/src/main/resources/config_schemas").toUri();
+        PipelineCandidate pipelineCandidate = new PipelineCandidate(contents, configURI);
+        ValidatedPipeline validatedPipeline = new ValidatedPipeline(pipelineCandidate);
 
         PipelineBuilder pipelineBuilder = context.getBean(PipelineBuilder.class);
 
-        Pipeline pipeline =  pipelineBuilder.buildPipeline(orgID, pipelineDraft);
+        Pipeline pipeline =  pipelineBuilder.buildPipeline(orgID, validatedPipeline);
 
         PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
         executionService.start(pipeline);
