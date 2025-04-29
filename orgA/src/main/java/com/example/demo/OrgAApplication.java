@@ -28,7 +28,7 @@ public class OrgAApplication {
         String orgID = "orgA";
         String contents;
         try {
-           contents = Files.readString(Paths.get("orgA/src/main/resources/heuristics_mining_pipeline.json"));
+           contents = Files.readString(Paths.get("orgA/src/main/resources/simple_pipeline.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
