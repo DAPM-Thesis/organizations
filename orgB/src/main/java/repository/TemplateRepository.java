@@ -3,6 +3,7 @@ package repository;
 import org.springframework.stereotype.Repository;
 import pipeline.processingelement.ProcessingElement;
 import templates.EventOperatorB;
+import templates.HeuristicsMiner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class TemplateRepository {
     public TemplateRepository() {
         templates = new HashMap<>();
         templates.put("SimpleOperator", EventOperatorB.class);
+        templates.put("HeuristicsMiner", HeuristicsMiner.class);
     }
 
     // TODO: make it more generic later
