@@ -24,14 +24,13 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
     @Override
     protected Pair<PetriNet, Boolean> process(Message message, int portNumber) {
         try {
-            String jarPath = "templates/algorithms/JarFile-1.0-SNAPSHOT-jar-with-dependencies.jar";
+            String jarPath = "orgB/src/main/java/templates/algorithms/JarFile-1.0-SNAPSHOT-jar-with-dependencies.jar";
             ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
 
             BufferedWriter jarInput = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             BufferedReader jarOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
             // Send input to the JAR
             MessageSerializer serializer = new MessageSerializer();
             message.acceptVisitor(serializer);
@@ -47,17 +46,11 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
                 outputBuilder.append(line).append("\n");
             }
 
-            // Wait for the process to finish
-            int exitCode = process.waitFor();
-            System.out.println("JAR process exited with code: " + exitCode);
-
             String jarOutputString = outputBuilder.toString();
-            System.out.println("JAR Output: " + jarOutputString);
-
             PetriNet petriNet = (PetriNet) MessageFactory.deserialize(jarOutputString);
-            Boolean success = true;
+            Boolean publish = true;
 
-            return new Pair<>(petriNet, success);
+            return new Pair<>(petriNet, publish);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
