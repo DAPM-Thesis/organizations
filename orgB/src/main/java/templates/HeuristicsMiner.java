@@ -14,6 +14,23 @@ import java.util.Map;
 
 public class HeuristicsMiner extends MiningOperator<PetriNet> {
 
+    private final BufferedWriter jarInput;
+    private final BufferedReader jarOutput;
+
+    public HeuristicsMiner() {
+        try {
+            String jarPath = "orgB/src/main/java/templates/algorithms/heuristics-miner.jar";
+            ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            jarInput = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            jarOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     protected Map<Class<? extends Message>, Integer> setConsumedInputs() {
         Map<Class<? extends Message>, Integer> map = new HashMap<>();
@@ -24,25 +41,19 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
     @Override
     protected Pair<PetriNet, Boolean> process(Message message, int portNumber) {
         try {
-            String jarPath = "orgB/src/main/java/templates/algorithms/JarFile-1.0-SNAPSHOT-jar-with-dependencies.jar";
-            ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-
-            BufferedWriter jarInput = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-            BufferedReader jarOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             // Send input to the JAR
             MessageSerializer serializer = new MessageSerializer();
             message.acceptVisitor(serializer);
             String event = serializer.getSerialization();
-            jarInput.write(event + "\n");
+            jarInput.write(event);
+            jarInput.newLine();
             jarInput.flush();
-            jarInput.close();
 
             // Collect output from the JAR
             StringBuilder outputBuilder = new StringBuilder();
             String line;
             while ((line = jarOutput.readLine()) != null) {
+                if (line.trim().isEmpty()) break;
                 outputBuilder.append(line).append("\n");
             }
 
