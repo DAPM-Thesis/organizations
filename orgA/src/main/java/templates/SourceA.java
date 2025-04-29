@@ -1,12 +1,12 @@
 package templates;
 
 import communication.message.impl.event.Event;
-import pipeline.processingelement.Source;
+import pipeline.processingelement.source.SimpleSource;
 
 import java.util.HashSet;
 import java.util.Random;
 
-public class SourceA extends Source<Event> {
+public class SourceA extends SimpleSource<Event> {
 
     private final String[] activities = {"Act1", "Act2", "Act3"};
     private final Random rand = new Random();
