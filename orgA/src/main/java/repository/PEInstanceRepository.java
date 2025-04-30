@@ -15,10 +15,12 @@ public class PEInstanceRepository {
         instances = new HashMap<>();
     }
 
-    public String storeInstance(ProcessingElement instance) {
-        String instanceID = IDGenerator.generateInstanceID();
+    public void storeInstance(String instanceID, ProcessingElement instance) {
         instances.put(instanceID, instance);
-        return instanceID;
+        System.out.printf("[PE-REGISTER] template=%s  class=%s  instanceId=%s%n",
+                instance.getClass().getSimpleName(),
+                instance.getClass().getName(),
+                instanceID);
     }
 
     public <T extends ProcessingElement> T getInstance(String instanceID) {

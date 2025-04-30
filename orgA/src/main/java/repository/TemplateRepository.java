@@ -2,6 +2,7 @@ package repository;
 
 import org.springframework.stereotype.Repository;
 import pipeline.processingelement.ProcessingElement;
+import pipeline.processingelement.accesscontrolled.PEToken;
 import templates.SinkA;
 import templates.SourceA;
 
@@ -20,14 +21,21 @@ public class TemplateRepository {
         templates.put("SimpleSink", SinkA.class);
     }
 
-    public <T extends ProcessingElement> T createInstanceFromTemplate(String templateID) {
+    public <T extends ProcessingElement> T createInstanceFromTemplate(
+            String templateID, PEToken token) {
+
         Class<? extends ProcessingElement> template = templates.get(templateID);
-        if(template == null) {throw new RuntimeException("No template found for template ID: " + templateID); }
-            try {
-                return (T) template.getDeclaredConstructor().newInstance();
-            } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
+        if (template == null)
+            throw new RuntimeException("No template found for template ID: " + templateID);
+
+        try {
+            return (T) template
+                    .getDeclaredConstructor(PEToken.class)
+                    .newInstance(token);
+        } catch (InvocationTargetException | InstantiationException
+                 | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }
