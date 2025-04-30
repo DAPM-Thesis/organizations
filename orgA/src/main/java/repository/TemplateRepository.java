@@ -3,6 +3,8 @@ package repository;
 import org.springframework.stereotype.Repository;
 import pipeline.processingelement.ProcessingElement;
 import pipeline.processingelement.accesscontrolled.PEToken;
+import templates.EventSource;
+import templates.PetriNetSink;
 import templates.SinkA;
 import templates.SourceA;
 
@@ -19,6 +21,8 @@ public class TemplateRepository {
         templates = new HashMap<>();
         templates.put("SimpleSource", SourceA.class);
         templates.put("SimpleSink", SinkA.class);
+        templates.put("EventSource", EventSource.class);
+        templates.put("PetriNetSink", PetriNetSink.class);
     }
 
     public <T extends ProcessingElement> T createInstanceFromTemplate(
@@ -37,5 +41,4 @@ public class TemplateRepository {
             throw new RuntimeException(e);
         }
     }
-
 }

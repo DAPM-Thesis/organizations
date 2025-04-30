@@ -8,13 +8,10 @@ import java.util.*;
 
 @Repository
 public class PEInstanceRepository {
-
     public Map<String, ProcessingElement> instances;
-
     public PEInstanceRepository() {
         instances = new HashMap<>();
     }
-
     public void storeInstance(String instanceID, ProcessingElement instance) {
         instances.put(instanceID, instance);
         System.out.printf("[PE-REGISTER] template=%s  class=%s  instanceId=%s%n",
@@ -22,7 +19,6 @@ public class PEInstanceRepository {
                 instance.getClass().getName(),
                 instanceID);
     }
-
     public <T extends ProcessingElement> T getInstance(String instanceID) {
         return (T) instances.get(instanceID);
     }

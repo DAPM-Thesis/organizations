@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pipeline.PipelineBuilder;
 import pipeline.processingelement.Sink;
-import pipeline.processingelement.Source;
+import pipeline.processingelement.source.Source;
 import pipeline.processingelement.accesscontrolled.PEToken;
 import pipeline.processingelement.operator.Operator;
 import repository.PEInstanceRepository;
