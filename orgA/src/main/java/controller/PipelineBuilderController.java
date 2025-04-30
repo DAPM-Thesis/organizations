@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pipeline.processingelement.ProcessingElement;
 import pipeline.processingelement.Sink;
 import pipeline.processingelement.operator.Operator;
 import pipeline.processingelement.source.Source;
@@ -17,11 +16,7 @@ import repository.TemplateRepository;
 import utils.IDGenerator;
 import utils.JsonUtil;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/pipelineBuilder")
