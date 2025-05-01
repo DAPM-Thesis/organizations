@@ -1,10 +1,6 @@
 package com.example.demo;
 
 import candidate_validation.*;
-import communication.message.Message;
-import communication.message.impl.event.Event;
-import communication.message.impl.petrinet.PetriNet;
-import candidate_validation.parsing.CandidateParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controller", "pipeline", "communication"})
+@ComponentScan(basePackages = {"controller", "pipeline", "communication", "repository"})
 public class OrgAApplication {
 
     public static void main(String[] args) {
@@ -28,7 +24,7 @@ public class OrgAApplication {
         String orgID = "orgA";
         String contents;
         try {
-           contents = Files.readString(Paths.get("orgA/src/main/resources/heuristics_miner_pipeline.json"));
+           contents = Files.readString(Paths.get("orgA/src/main/resources/simple_pipeline.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

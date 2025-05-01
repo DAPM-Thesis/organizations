@@ -4,6 +4,7 @@ import communication.API.PEInstanceResponse;
 import communication.config.ConsumerConfig;
 import communication.config.ProducerConfig;
 import communication.message.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,7 @@ import repository.TemplateRepository;
 import utils.IDGenerator;
 import utils.JsonUtil;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/pipelineBuilder")
@@ -27,8 +24,14 @@ public class PipelineBuilderController {
     @Value("${organization.broker.orgA}")
     private String orgABroker;
 
-    private final TemplateRepository templateRepository = new TemplateRepository();
-    private final PEInstanceRepository peInstanceRepository = new PEInstanceRepository();
+    private final TemplateRepository templateRepository;
+    private final PEInstanceRepository peInstanceRepository;
+
+    @Autowired
+    public PipelineBuilderController(TemplateRepository templateRepository, PEInstanceRepository peInstanceRepository) {
+        this.templateRepository = templateRepository;
+        this.peInstanceRepository = peInstanceRepository;
+    }
 
     @PostMapping("/source/templateID/{templateID}")
     public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID) {

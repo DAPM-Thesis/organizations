@@ -12,24 +12,14 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: JXES parsing errors
 public class HeuristicsMiner extends MiningOperator<PetriNet> {
 
-    private final BufferedWriter jarInput;
-    private final BufferedReader jarOutput;
+    private final Object processLock = new Object();
 
-    public HeuristicsMiner() {
-        try {
-            String jarPath = "orgB/src/main/java/templates/algorithms/heuristics-miner.jar";
-            ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-
-            jarInput = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-            jarOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private Process process;
+    private BufferedWriter jarInput;
+    private BufferedReader jarOutput;
 
     @Override
     protected Map<Class<? extends Message>, Integer> setConsumedInputs() {
@@ -38,38 +28,88 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
         return map;
     }
 
-    @Override
-    protected Pair<PetriNet, Boolean> process(Message message, int portNumber) {
-        try {
-            // Send input to the JAR
-            MessageSerializer serializer = new MessageSerializer();
-            message.acceptVisitor(serializer);
-            String event = serializer.getSerialization();
-            jarInput.write(event);
-            jarInput.newLine();
-            jarInput.flush();
+    private void startProcess() {
+        synchronized (processLock) {
+            try {
+                if (process == null || !process.isAlive()) {
+                    String jarPath = "orgB/src/main/java/templates/algorithm/heuristics-miner.jar";
+                    ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
+                    processBuilder.redirectErrorStream(true);
+                    process = processBuilder.start();
 
-            // Collect output from the JAR
-            StringBuilder outputBuilder = new StringBuilder();
-            String line;
-            while ((line = jarOutput.readLine()) != null) {
-                if (line.trim().isEmpty()) break;
-                outputBuilder.append(line).append("\n");
+                    jarInput = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+                    jarOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to start JAR process", e);
             }
-
-            String jarOutputString = outputBuilder.toString();
-            PetriNet petriNet = (PetriNet) MessageFactory.deserialize(jarOutputString);
-            Boolean publish = true;
-
-            return new Pair<>(petriNet, publish);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
+
+
+    @Override
+    protected Pair<PetriNet, Boolean> process(Message message, int portNumber) {
+        synchronized (processLock) {
+            try {
+                startProcess();
+                // Send input to the JAR
+                MessageSerializer serializer = new MessageSerializer();
+                message.acceptVisitor(serializer);
+                String event = serializer.getSerialization();
+
+                jarInput.write(event);
+                jarInput.newLine();
+                jarInput.flush();
+
+                // Collect output from the JAR with timeout
+                StringBuilder outputBuilder = new StringBuilder();
+                long startTime = System.currentTimeMillis();
+                String line;
+                while ((line = jarOutput.readLine()) != null) {
+                    if (line.trim().isEmpty()) break;
+                    outputBuilder.append(line).append("\n");
+                    if (System.currentTimeMillis() - startTime > 10000) {
+                        throw new IOException("Timeout while reading response from JAR");
+                    }
+                }
+
+                String jarOutputString = outputBuilder.toString();
+                PetriNet petriNet = (PetriNet) MessageFactory.deserialize(jarOutputString);
+                Boolean publish = true;
+
+                return new Pair<>(petriNet, publish);
+
+            } catch (Exception e) {
+                throw new RuntimeException("Error during processing in HeuristicsMiner", e);
+            }
+        }
+    }
+
 
     @Override
     protected boolean publishCondition(Pair<PetriNet, Boolean> petriNetBooleanPair) {
         return true;
+    }
+
+    public void close() {
+        synchronized (processLock) {
+            try {
+                if (jarInput != null) {
+                    jarInput.close();
+                }
+                if (jarOutput != null) {
+                    jarOutput.close();
+                }
+                if (process != null) {
+                    process.destroy();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to close JAR process", e);
+            } finally {
+                jarInput = null;
+                jarOutput = null;
+                process = null;
+            }
+        }
     }
 }
