@@ -20,7 +20,6 @@ public class TemplateRepository {
         templates.put("HeuristicsMiner", HeuristicsMiner.class);
     }
 
-    // TODO: make it more generic later
     public <T extends ProcessingElement> T createInstanceFromTemplate(String templateID) {
         Class<? extends ProcessingElement> template = templates.get(templateID);
         if(template == null) { throw new RuntimeException("Template " + templateID + " not found"); }

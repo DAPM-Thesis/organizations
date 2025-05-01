@@ -1,10 +1,6 @@
 package com.example.demo;
 
 import candidate_validation.*;
-import communication.message.Message;
-import communication.message.impl.event.Event;
-import communication.message.impl.petrinet.PetriNet;
-import candidate_validation.parsing.CandidateParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
