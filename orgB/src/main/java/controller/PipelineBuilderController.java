@@ -1,6 +1,7 @@
 package controller;
 
-import communication.API.PEInstanceResponse;
+import communication.API.request.PEInstanceRequest;
+import communication.API.response.PEInstanceResponse;
 import communication.config.ConsumerConfig;
 import communication.config.ProducerConfig;
 import communication.message.Message;
@@ -34,7 +35,7 @@ public class PipelineBuilderController {
     }
 
     @PostMapping("/source/templateID/{templateID}")
-    public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID) {
+    public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
         String decodedTemplateID = JsonUtil.decode(templateID);
 
         Source<Message> source = templateRepository.createInstanceFromTemplate(decodedTemplateID);
@@ -53,11 +54,11 @@ public class PipelineBuilderController {
     }
 
     @PostMapping("/operator/templateID/{templateID}")
-    public ResponseEntity<PEInstanceResponse> createOperator(@PathVariable String templateID, @RequestBody List<ConsumerConfig> consumerConfigs) {
+    public ResponseEntity<PEInstanceResponse> createOperator(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Operator<Message, Message> operator = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (operator != null) {
-            for (ConsumerConfig config : consumerConfigs) {
+            for (ConsumerConfig config : requestBody.getConsumerConfigs()) {
                 operator.registerConsumer(config);
             }
             String topic = IDGenerator.generateTopic();
@@ -74,11 +75,11 @@ public class PipelineBuilderController {
     }
 
     @PostMapping("/sink/templateID/{templateID}")
-    public ResponseEntity<PEInstanceResponse> createSink(@PathVariable String templateID, @RequestBody List<ConsumerConfig> consumerConfigs) {
+    public ResponseEntity<PEInstanceResponse> createSink(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Sink sink = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (sink != null) {
-            for (ConsumerConfig config : consumerConfigs) {
+            for (ConsumerConfig config : requestBody.getConsumerConfigs()) {
                 sink.registerConsumer(config);
             }
             String instanceID = peInstanceRepository.storeInstance(sink);
