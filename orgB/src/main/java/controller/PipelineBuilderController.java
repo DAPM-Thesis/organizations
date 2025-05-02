@@ -40,6 +40,7 @@ public class PipelineBuilderController {
 
         Source<Message> source = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (source != null) {
+            source.setConfiguration(requestBody.getConfiguration());
             String topic = IDGenerator.generateTopic();
             ProducerConfig producerConfig = new ProducerConfig(orgBBroker, topic);
             source.registerProducer(producerConfig);
@@ -58,6 +59,7 @@ public class PipelineBuilderController {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Operator<Message, Message> operator = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (operator != null) {
+            operator.setConfiguration(requestBody.getConfiguration());
             for (ConsumerConfig config : requestBody.getConsumerConfigs()) {
                 operator.registerConsumer(config);
             }
@@ -79,6 +81,7 @@ public class PipelineBuilderController {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Sink sink = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (sink != null) {
+            sink.setConfiguration(requestBody.getConfiguration());
             for (ConsumerConfig config : requestBody.getConsumerConfigs()) {
                 sink.registerConsumer(config);
             }

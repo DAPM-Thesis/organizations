@@ -1,6 +1,7 @@
 package controller;
 
 import communication.API.request.PEInstanceRequest;
+import communication.API.response.PEInstanceResponse;
 import communication.config.ConsumerConfig;
 import communication.config.ProducerConfig;
 import communication.message.Message;
@@ -34,17 +35,18 @@ public class PipelineBuilderController {
     }
 
     @PostMapping("/source/templateID/{templateID}")
-    public ResponseEntity<communication.API.response.PEInstanceResponse> configureSource(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
+    public ResponseEntity<PEInstanceResponse> configureSource(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
         String decodedTemplateID = JsonUtil.decode(templateID);
 
         Source<Message> source = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (source != null) {
+            source.setConfiguration(requestBody.getConfiguration());
             String topic = IDGenerator.generateTopic();
             ProducerConfig producerConfig = new ProducerConfig(orgABroker, topic);
             source.registerProducer(producerConfig);
             String instanceID = peInstanceRepository.storeInstance(source);
 
-            return ResponseEntity.ok(new communication.API.response.PEInstanceResponse
+            return ResponseEntity.ok(new PEInstanceResponse
                     .Builder(decodedTemplateID, instanceID)
                     .producerConfig(producerConfig)
                     .build());
@@ -53,10 +55,11 @@ public class PipelineBuilderController {
     }
 
     @PostMapping("/operator/templateID/{templateID}")
-    public ResponseEntity<communication.API.response.PEInstanceResponse> createOperator(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
+    public ResponseEntity<PEInstanceResponse> createOperator(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Operator<Message, Message> operator = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (operator != null) {
+            operator.setConfiguration(requestBody.getConfiguration());
             for (ConsumerConfig config : requestBody.getConsumerConfigs()) {
                 operator.registerConsumer(config);
             }
@@ -65,7 +68,7 @@ public class PipelineBuilderController {
             operator.registerProducer(producerConfig);
 
             String instanceID = peInstanceRepository.storeInstance(operator);
-            return ResponseEntity.ok(new communication.API.response.PEInstanceResponse
+            return ResponseEntity.ok(new PEInstanceResponse
                     .Builder(decodedTemplateID, instanceID)
                     .producerConfig(producerConfig)
                     .build());
@@ -74,15 +77,16 @@ public class PipelineBuilderController {
     }
 
     @PostMapping("/sink/templateID/{templateID}")
-    public ResponseEntity<communication.API.response.PEInstanceResponse> createSink(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
+    public ResponseEntity<PEInstanceResponse> createSink(@PathVariable String templateID, @RequestBody PEInstanceRequest requestBody) {
         String decodedTemplateID = JsonUtil.decode(templateID);
         Sink sink = templateRepository.createInstanceFromTemplate(decodedTemplateID);
         if (sink != null) {
+            sink.setConfiguration(requestBody.getConfiguration());
             for (ConsumerConfig config : requestBody.getConsumerConfigs()) {
                 sink.registerConsumer(config);
             }
             String instanceID = peInstanceRepository.storeInstance(sink);
-            return ResponseEntity.ok(new communication.API.response.PEInstanceResponse
+            return ResponseEntity.ok(new PEInstanceResponse
                     .Builder(decodedTemplateID, instanceID)
                     .build());
         }
