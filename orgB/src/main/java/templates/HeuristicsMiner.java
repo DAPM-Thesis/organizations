@@ -12,7 +12,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO: JXES parsing errors
 public class HeuristicsMiner extends MiningOperator<PetriNet> {
 
     private final Object processLock = new Object();

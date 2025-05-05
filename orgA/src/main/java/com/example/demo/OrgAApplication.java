@@ -8,6 +8,11 @@ import org.springframework.context.annotation.ComponentScan;
 import pipeline.Pipeline;
 import pipeline.PipelineBuilder;
 import pipeline.service.PipelineExecutionService;
+import repository.TemplateRepository;
+import templates.EventSource;
+import templates.PetriNetSink;
+import templates.SinkA;
+import templates.SourceA;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +25,12 @@ public class OrgAApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(OrgAApplication.class, args);
+
+        TemplateRepository templateRepository = context.getBean(TemplateRepository.class);
+        templateRepository.storeTemplate("SimpleSource", SourceA.class);
+        templateRepository.storeTemplate("SimpleSink", SinkA.class);
+        templateRepository.storeTemplate("EventSource", EventSource.class);
+        templateRepository.storeTemplate("PetriNetSink", PetriNetSink.class);
 
         String orgID = "orgA";
         String contents;
