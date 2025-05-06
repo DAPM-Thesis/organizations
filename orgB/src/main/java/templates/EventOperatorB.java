@@ -2,12 +2,17 @@ package templates;
 
 import communication.message.Message;
 import communication.message.impl.event.Event;
+import pipeline.processingelement.Configuration;
 import pipeline.processingelement.operator.SimpleOperator;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class EventOperatorB extends SimpleOperator<Event> {
+
+    public EventOperatorB(Configuration configuration) {
+        super(configuration);
+    }
 
     @Override
     protected Map<Class<? extends Message>, Integer> setConsumedInputs() {
