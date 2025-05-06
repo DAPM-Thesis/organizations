@@ -21,7 +21,7 @@ public class EventSource extends WebSource<Event> {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Flux<Event> process() {
+    protected Flux<Event> process() {
         return webClient.get()
                 .retrieve()
                 .bodyToFlux(String.class)

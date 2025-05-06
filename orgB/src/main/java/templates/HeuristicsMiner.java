@@ -12,7 +12,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO: JXES parsing errors
 public class HeuristicsMiner extends MiningOperator<PetriNet> {
 
     private final Object processLock = new Object();
@@ -62,23 +61,28 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
                 jarInput.flush();
 
                 // Collect output from the JAR with timeout
-                StringBuilder outputBuilder = new StringBuilder();
                 long startTime = System.currentTimeMillis();
+                StringBuilder stringBuilder = new StringBuilder();
                 String line;
                 while ((line = jarOutput.readLine()) != null) {
-                    if (line.trim().isEmpty()) break;
-                    outputBuilder.append(line).append("\n");
+                    if (line.trim().isEmpty()) {
+                        break;
+                    }
+                    stringBuilder.append(line).append(System.lineSeparator());
                     if (System.currentTimeMillis() - startTime > 10000) {
                         throw new IOException("Timeout while reading response from JAR");
                     }
                 }
 
-                String jarOutputString = outputBuilder.toString();
-                PetriNet petriNet = (PetriNet) MessageFactory.deserialize(jarOutputString);
-                Boolean publish = true;
+                String statusLine = jarOutput.readLine();
+                String content = stringBuilder.toString().trim();
+                boolean isSuccess = Boolean.parseBoolean(statusLine);
 
-                return new Pair<>(petriNet, publish);
-
+                if (isSuccess) {
+                    PetriNet petriNet = (PetriNet) MessageFactory.deserialize(content);
+                    return new Pair<>(petriNet, isSuccess);
+                }
+                return new Pair<>(null, isSuccess);
             } catch (Exception e) {
                 throw new RuntimeException("Error during processing in HeuristicsMiner", e);
             }
@@ -88,7 +92,7 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
 
     @Override
     protected boolean publishCondition(Pair<PetriNet, Boolean> petriNetBooleanPair) {
-        return true;
+        return petriNetBooleanPair.second();
     }
 
     public void close() {

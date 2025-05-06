@@ -12,7 +12,7 @@ public class SourceA extends SimpleSource<Event> {
     private final Random rand = new Random();
 
     @Override
-    public Event process() {
+    protected Event process() {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
