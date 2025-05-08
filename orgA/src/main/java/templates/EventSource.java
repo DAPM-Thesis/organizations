@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import communication.message.impl.event.Event;
 import org.springframework.web.reactive.function.client.WebClient;
+import pipeline.processingelement.Configuration;
 import pipeline.processingelement.source.WebSource;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
@@ -19,6 +20,10 @@ public class EventSource extends WebSource<Event> {
             .build();
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public EventSource(Configuration configuration) {
+        super(configuration);
+    }
 
     @Override
     protected Flux<Event> process() {

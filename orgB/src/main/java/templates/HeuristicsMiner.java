@@ -5,6 +5,7 @@ import communication.message.impl.event.Event;
 import communication.message.impl.petrinet.PetriNet;
 import communication.message.serialization.MessageSerializer;
 import communication.message.serialization.deserialization.MessageFactory;
+import pipeline.processingelement.Configuration;
 import pipeline.processingelement.operator.MiningOperator;
 import utils.Pair;
 
@@ -12,7 +13,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO: JXES parsing errors
 public class HeuristicsMiner extends MiningOperator<PetriNet> {
 
     private final Object processLock = new Object();
@@ -20,6 +20,10 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
     private Process process;
     private BufferedWriter jarInput;
     private BufferedReader jarOutput;
+
+    public HeuristicsMiner(Configuration configuration) {
+        super(configuration);
+    }
 
     @Override
     protected Map<Class<? extends Message>, Integer> setConsumedInputs() {

@@ -1,6 +1,7 @@
 package templates;
 
 import communication.message.impl.event.Event;
+import pipeline.processingelement.Configuration;
 import pipeline.processingelement.source.SimpleSource;
 
 import java.util.HashSet;
@@ -10,6 +11,10 @@ public class SourceA extends SimpleSource<Event> {
 
     private final String[] activities = {"Act1", "Act2", "Act3"};
     private final Random rand = new Random();
+
+    public SourceA(Configuration configuration) {
+        super(configuration);
+    }
 
     @Override
     protected Event process() {

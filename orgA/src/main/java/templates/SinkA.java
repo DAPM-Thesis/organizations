@@ -2,12 +2,17 @@ package templates;
 
 import communication.message.Message;
 import communication.message.impl.event.Event;
+import pipeline.processingelement.Configuration;
 import pipeline.processingelement.Sink;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SinkA extends Sink {
+
+    public SinkA(Configuration configuration) {
+        super(configuration);
+    }
 
     @Override
     public void observe(Message message, int portNumber) {

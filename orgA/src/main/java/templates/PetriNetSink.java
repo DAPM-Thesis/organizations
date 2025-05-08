@@ -12,6 +12,7 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
+import pipeline.processingelement.Configuration;
 import pipeline.processingelement.Sink;
 
 import java.io.File;
@@ -25,6 +26,10 @@ import static guru.nidi.graphviz.engine.Graphviz.fromGraph;
 import static guru.nidi.graphviz.model.Factory.*;
 
 public class PetriNetSink extends Sink {
+    public PetriNetSink(Configuration configuration) {
+        super(configuration);
+    }
+
     @Override
     public void observe(Message message, int portNumber) {
         PetriNet petriNet = (PetriNet) message;
