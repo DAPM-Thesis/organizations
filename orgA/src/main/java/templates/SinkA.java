@@ -4,6 +4,7 @@ import communication.message.Message;
 import communication.message.impl.event.Event;
 import pipeline.processingelement.Configuration;
 import pipeline.processingelement.Sink;
+import utils.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +16,8 @@ public class SinkA extends Sink {
     }
 
     @Override
-    public void observe(Message message, int portNumber) {
-        System.out.println(this + " received: " + message + " on port " + portNumber);
+    public void observe(Pair<Message, Integer> messageAndPortNumber) {
+        System.out.println(this + " received: " + messageAndPortNumber.first() + " on port " + messageAndPortNumber.second());
     }
 
     @Override
