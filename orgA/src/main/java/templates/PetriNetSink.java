@@ -14,6 +14,7 @@ import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import pipeline.processingelement.Configuration;
 import pipeline.processingelement.Sink;
+import utils.Pair;
 
 import java.io.File;
 import java.util.HashMap;
@@ -31,8 +32,8 @@ public class PetriNetSink extends Sink {
     }
 
     @Override
-    public void observe(Message message, int portNumber) {
-        PetriNet petriNet = (PetriNet) message;
+    public void observe(Pair<Message, Integer> messageAndPortNumber) {
+        PetriNet petriNet = (PetriNet) messageAndPortNumber.first();
         MutableGraph dotGraph = constructDotGraph(petriNet);
         try {
             fromGraph(dotGraph)
