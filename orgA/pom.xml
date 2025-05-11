@@ -59,6 +59,34 @@
             <artifactId>graphviz-java</artifactId>
             <version>0.18.1</version>
         </dependency>
+        <!-- Spring WebFlux (includes Spring Boot WebFlux Starter) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>3.4.5</version>
+        </dependency>
+
+        <!-- Reactor Core (if not already pulled in transitively) -->
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>3.8.0-M2</version>
+        </dependency>
+
+        <!-- OkHttp client -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.12.0</version>
+        </dependency>
+
+        <!-- OkHttp SSE support -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-sse</artifactId>
+            <version>4.12.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

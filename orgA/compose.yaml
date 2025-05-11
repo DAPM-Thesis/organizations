@@ -21,6 +21,7 @@ services:
   kafka-A:
     hostname: kafka-A
     container_name: kafka-A
+    restart: always
     networks:
       - kafka-cluster
     image: confluentinc/cp-kafka:latest
