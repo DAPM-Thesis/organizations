@@ -11,8 +11,6 @@
     <groupId>com.example</groupId>
     <artifactId>orgA</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>demo</description>
     <url/>
     <licenses>
         <license/>
@@ -50,14 +48,14 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.networknt</groupId>
-            <artifactId>json-schema-validator</artifactId>
-            <version>1.5.6</version>
-        </dependency>
-        <dependency>
             <groupId>guru.nidi</groupId>
             <artifactId>graphviz-java</artifactId>
             <version>0.18.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
         </dependency>
     </dependencies>
 
