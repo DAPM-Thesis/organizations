@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.dapm.org/config/orga_languagefilter_config_schema.json",
+  "title": "orgA LanguageFilter Config",
+  "type": "object",
+  "properties": {
+    "string": { "type":  "string", "minLength": 2 }
+  },
+  "required": ["string"],
+  "additionalProperties": false
+}

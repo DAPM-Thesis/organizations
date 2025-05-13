@@ -9,10 +9,7 @@ import pipeline.Pipeline;
 import pipeline.PipelineBuilder;
 import pipeline.service.PipelineExecutionService;
 import repository.TemplateRepository;
-import templates.EventSource;
-import templates.PetriNetSink;
-import templates.SinkA;
-import templates.SourceA;
+import templates.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,11 +28,12 @@ public class OrgAApplication {
         templateRepository.storeTemplate("SimpleSink", SinkA.class);
         templateRepository.storeTemplate("EventSource", EventSource.class);
         templateRepository.storeTemplate("PetriNetSink", PetriNetSink.class);
+        templateRepository.storeTemplate("LanguageFilter", LanguageFilter.class);
 
         String orgID = "orgA";
         String contents;
         try {
-           contents = Files.readString(Paths.get("orgA/src/main/resources/simple_pipeline.json"));
+           contents = Files.readString(Paths.get("orgA/src/main/resources/heuristics_miner_pipeline.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
