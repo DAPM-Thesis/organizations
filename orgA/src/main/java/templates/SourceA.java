@@ -93,5 +93,4 @@ public class SourceA extends SimpleSource<Event> {
             String name,
             Object value
     ) {}
-    public static record CustomPayload(){}
 }
