@@ -1,6 +1,6 @@
-package com.dapm2.ingestion_service.repository;
+package com.example.demo.repository;
 
-import com.dapm2.ingestion_service.entity.FilterConfig;
+import com.example.demo.entity.FilterConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FilterConfigRepository extends JpaRepository<FilterConfig, Long> {}

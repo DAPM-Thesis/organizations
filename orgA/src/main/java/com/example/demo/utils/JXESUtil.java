@@ -1,4 +1,4 @@
-package com.dapm2.ingestion_service.utils;
+package com.example.demo.utils;
 
 import communication.message.impl.Trace;
 import communication.message.impl.event.Event;

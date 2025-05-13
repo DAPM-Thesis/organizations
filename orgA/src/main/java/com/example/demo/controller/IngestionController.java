@@ -1,7 +1,7 @@
-package com.dapm2.ingestion_service.controller;
+package com.example.demo.controller;
 
-import com.dapm2.ingestion_service.dto.EventDto;
-import com.dapm2.ingestion_service.service.IngestionService;
+import com.example.demo.dto.EventDto;
+import com.example.demo.service.IngestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;

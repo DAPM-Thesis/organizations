@@ -1,7 +1,9 @@
-package com.dapm2.ingestion_service.dto;
-import communication.message.impl.event.Event;
-import java.util.Collection;
+package com.example.demo.dto;
+
 import communication.message.impl.event.Attribute;
+import communication.message.impl.event.Event;
+
+import java.util.Collection;
 
 public record EventDto(
         String caseID,

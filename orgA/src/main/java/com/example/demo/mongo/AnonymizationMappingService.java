@@ -1,6 +1,6 @@
-package com.dapm2.ingestion_service.mongo;
+package com.example.demo.mongo;
 
-import com.dapm2.ingestion_service.utils.AppConstants;
+import com.example.demo.utils.AppConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.dapm2.ingestion_service.utils.JsonNodeUtils.getTextByPath;
+import static com.example.demo.utils.JsonNodeUtils.getTextByPath;
 
 @Service
 public class AnonymizationMappingService {

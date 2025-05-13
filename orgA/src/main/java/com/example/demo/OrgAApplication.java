@@ -20,7 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controller", "pipeline", "communication", "repository"})
+@ComponentScan(basePackages = {"com.example.demo",
+        "repository","controller", "pipeline", "communication", "repository"})
 public class OrgAApplication {
 
     public static void main(String[] args) {

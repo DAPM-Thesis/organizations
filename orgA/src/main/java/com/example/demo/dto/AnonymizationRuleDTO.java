@@ -1,10 +1,9 @@
-package com.dapm2.ingestion_service.dto;
+package com.example.demo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter

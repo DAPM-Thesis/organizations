@@ -1,10 +1,10 @@
-package com.dapm2.ingestion_service.service;
+package com.example.demo.service;
 
-import com.dapm2.ingestion_service.dto.*;
-import com.dapm2.ingestion_service.entity.*;
-import com.dapm2.ingestion_service.repository.AttributeSettingRepository;
-import com.dapm2.ingestion_service.repository.FilterConfigRepository;
-import com.dapm2.ingestion_service.utils.AppConstants;
+import com.example.demo.dto.*;
+import com.example.demo.entity.*;
+import com.example.demo.repository.AttributeSettingRepository;
+import com.example.demo.repository.FilterConfigRepository;
+import com.example.demo.utils.AppConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

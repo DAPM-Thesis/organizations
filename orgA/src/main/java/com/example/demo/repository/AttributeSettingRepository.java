@@ -1,6 +1,6 @@
-package com.dapm2.ingestion_service.repository;
+package com.example.demo.repository;
 
-import com.dapm2.ingestion_service.entity.AttributeSetting;
+import com.example.demo.entity.AttributeSetting;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AttributeSettingRepository extends JpaRepository<AttributeSetting, Long> {

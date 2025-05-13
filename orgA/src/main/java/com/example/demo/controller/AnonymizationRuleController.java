@@ -1,14 +1,16 @@
-package com.dapm2.ingestion_service.controller;
-import com.dapm2.ingestion_service.dto.AnonymizationRuleDTO;
-import com.dapm2.ingestion_service.dto.StatusUpdateDTO;
-import com.dapm2.ingestion_service.entity.AnonymizationRule;
-import com.dapm2.ingestion_service.service.AnonymizationRuleService;
+package com.example.demo.controller;
+
+import com.example.demo.dto.AnonymizationRuleDTO;
+import com.example.demo.dto.StatusUpdateDTO;
+import com.example.demo.entity.AnonymizationRule;
+import com.example.demo.service.AnonymizationRuleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 

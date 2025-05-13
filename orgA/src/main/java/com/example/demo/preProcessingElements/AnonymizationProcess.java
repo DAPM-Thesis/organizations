@@ -1,18 +1,17 @@
 // AnonymizationProcess.java
-package com.dapm2.ingestion_service.preProcessingElements;
+package com.example.demo.preProcessingElements;
 
-import com.dapm2.ingestion_service.config.SpringContext;
-import com.dapm2.ingestion_service.mongo.AnonymizationMappingService;
-import com.dapm2.ingestion_service.entity.AnonymizationRule;
-import com.dapm2.ingestion_service.service.AnonymizationRuleService;
-import com.dapm2.ingestion_service.utils.AppConstants;
-import com.dapm2.ingestion_service.utils.JsonNodeUtils;   // ← new import
+import com.example.demo.config.SpringContext;
+import com.example.demo.entity.AnonymizationRule;
+import com.example.demo.mongo.AnonymizationMappingService;
+import com.example.demo.service.AnonymizationRuleService;
+import com.example.demo.utils.AppConstants;
+import com.example.demo.utils.JsonNodeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**

@@ -1,7 +1,7 @@
 // src/main/java/com/dapm2/ingestion_service/service/IngestionService.java
-package com.dapm2.ingestion_service.service;
+package com.example.demo.service;
 
-import com.dapm2.ingestion_service.preProcessingElements.streamSources.SSEStreamSource;
+//import com.example.demo.preProcessingElements.streamSources.SSEStreamSource;
 import communication.message.impl.event.Event;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,7 +19,7 @@ public class IngestionService {
     private volatile boolean running = false;
 
     // Hold onto the SSE source so we can stop it later
-    private SSEStreamSource streamSource;
+    //private SSEStreamSource streamSource;
 
     public IngestionService() {
         // KafkaProducerService has been removed
@@ -29,23 +29,24 @@ public class IngestionService {
      * Starts the SSE ingestion stream (only once) and returns a Flux of Events.
      */
     public synchronized Flux<Event> startIngestionFlux() {
-        if (!running) {
-            running = true;
-            streamSource = new SSEStreamSource();
-            executor.submit(this::runStreamSource);
-        }
-        return sink.asFlux();
+//        if (!running) {
+//            running = true;
+//            streamSource = new SSEStreamSource();
+//            executor.submit(this::runStreamSource);
+//        }
+//        return sink.asFlux();
+        return null;
     }
 
     /**
      * Internal loop: pulls from the SSEStreamSource while running.
      */
     private void runStreamSource() {
-        streamSource.start();
-        Event e;
-        while (running && (e = streamSource.process()) != null) {
-            sink.tryEmitNext(e);
-        }
+//        streamSource.start();
+//        Event e;
+//        while (running && (e = streamSource.process()) != null) {
+//            sink.tryEmitNext(e);
+//        }
     }
 
     /**
@@ -53,14 +54,14 @@ public class IngestionService {
      * closes the source, shuts down the executor, and completes the Flux.
      */
     public synchronized void stopIngestion() {
-        if (running) {
-            running = false;
-            if (streamSource != null) {
-                streamSource.stop();
-            }
-            executor.shutdownNow();
-            sink.tryEmitComplete();
-        }
+//        if (running) {
+//            running = false;
+//            if (streamSource != null) {
+//                streamSource.stop();
+//            }
+//            executor.shutdownNow();
+//            sink.tryEmitComplete();
+//        }
     }
 
     /**

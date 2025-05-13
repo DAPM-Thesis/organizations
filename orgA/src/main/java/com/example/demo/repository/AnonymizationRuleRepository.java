@@ -1,6 +1,6 @@
-package com.dapm2.ingestion_service.repository;
+package com.example.demo.repository;
 
-import com.dapm2.ingestion_service.entity.AnonymizationRule;
+import com.example.demo.entity.AnonymizationRule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

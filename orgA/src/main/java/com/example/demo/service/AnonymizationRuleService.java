@@ -1,12 +1,13 @@
-package com.dapm2.ingestion_service.service;
+package com.example.demo.service;
 
-import com.dapm2.ingestion_service.dto.AnonymizationRuleDTO;
-import com.dapm2.ingestion_service.entity.AnonymizationRule;
-import com.dapm2.ingestion_service.repository.AnonymizationRuleRepository;
-import com.dapm2.ingestion_service.utils.AppConstants;
+import com.example.demo.dto.AnonymizationRuleDTO;
+import com.example.demo.entity.AnonymizationRule;
+import com.example.demo.repository.AnonymizationRuleRepository;
+import com.example.demo.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 

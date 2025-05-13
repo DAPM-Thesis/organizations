@@ -1,6 +1,6 @@
-package com.dapm2.ingestion_service.entity;
+package com.example.demo.entity;
 
-import com.dapm2.ingestion_service.utils.AppConstants;
+import com.example.demo.utils.AppConstants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,9 @@
-package com.dapm2.ingestion_service.preProcessingElements;
+package com.example.demo.preProcessingElements;
 
-import com.dapm2.ingestion_service.config.SpringContext;
-import com.dapm2.ingestion_service.entity.FilterConfig;
-import com.dapm2.ingestion_service.service.StreamConfigurationService;
-import com.dapm2.ingestion_service.utils.JsonNodeUtils;
+import com.example.demo.config.SpringContext;
+import com.example.demo.entity.FilterConfig;
+import com.example.demo.service.StreamConfigurationService;
+import com.example.demo.utils.JsonNodeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

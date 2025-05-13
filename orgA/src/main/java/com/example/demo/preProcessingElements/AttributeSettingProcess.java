@@ -1,24 +1,17 @@
-package com.dapm2.ingestion_service.preProcessingElements;
+package com.example.demo.preProcessingElements;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.dapm2.ingestion_service.config.SpringContext;
-import com.dapm2.ingestion_service.entity.AttributeSetting;
-import com.dapm2.ingestion_service.service.StreamConfigurationService;
+import com.example.demo.config.SpringContext;
+import com.example.demo.entity.AttributeSetting;
+import com.example.demo.service.StreamConfigurationService;
+import com.example.demo.utils.JsonNodeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import communication.message.impl.event.Attribute;
 import communication.message.impl.event.Event;
-import com.dapm2.ingestion_service.utils.JsonNodeUtils;
-import com.dapm2.ingestion_service.utils.TimestampConverterISO;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Processes incoming JSON payloads into Event messages,

@@ -1,4 +1,4 @@
-package com.dapm2.ingestion_service.dto;
+package com.example.demo.dto;
 
 import lombok.Getter;
 import lombok.Setter;

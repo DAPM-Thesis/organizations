@@ -1,4 +1,4 @@
-package com.dapm2.ingestion_service.utils;
+package com.example.demo.utils;
 
 public class AttributeSanitizer {
     public static String sanitize(String raw) {

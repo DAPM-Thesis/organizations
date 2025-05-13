@@ -1,4 +1,4 @@
-package com.dapm2.ingestion_service.utils;
+package com.example.demo.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;

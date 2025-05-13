@@ -1,11 +1,9 @@
-package com.dapm2.ingestion_service.controller;
+package com.example.demo.controller;
 
-import com.dapm2.ingestion_service.dto.AttributeSettingDTO;
-import com.dapm2.ingestion_service.dto.FilterConfigDTO;
-import com.dapm2.ingestion_service.dto.StatusUpdateDTO;
-import com.dapm2.ingestion_service.entity.AttributeSetting;
-import com.dapm2.ingestion_service.entity.FilterConfig;
-import com.dapm2.ingestion_service.service.StreamConfigurationService;
+import com.example.demo.dto.FilterConfigDTO;
+import com.example.demo.dto.StatusUpdateDTO;
+import com.example.demo.entity.FilterConfig;
+import com.example.demo.service.StreamConfigurationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
