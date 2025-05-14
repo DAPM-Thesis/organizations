@@ -20,13 +20,13 @@ public class LanguageFilter extends SimpleOperator<Event> {
 
     @Override
     protected Event process(Message message, int portNumber) {
-        MessageSerializer serializer = new MessageSerializer();
-        message.acceptVisitor(serializer);
-        String event = serializer.getSerialization();
-        if (event.contains("\"domain\": \"" + language + ".")) {
+        Event event = (Event) message;
+        if(event.getAttributes().stream()
+                .anyMatch(attribute -> attribute.getName()
+                        .equals("domain") && attribute.getValue()
+                        .toString().contains(language + "."))) {
             System.out.println("Event: " + event);
-            Message msg = MessageFactory.deserialize(event);
-            return (Event) msg;
+            return event;
         }
         return null;
     }
