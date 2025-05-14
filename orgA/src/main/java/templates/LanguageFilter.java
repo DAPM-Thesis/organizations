@@ -2,8 +2,6 @@ package templates;
 
 import communication.message.Message;
 import communication.message.impl.event.Event;
-import communication.message.serialization.MessageSerializer;
-import communication.message.serialization.deserialization.MessageFactory;
 import pipeline.processingelement.Configuration;
 import pipeline.processingelement.operator.SimpleOperator;
 
