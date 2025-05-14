@@ -23,7 +23,6 @@ public class LanguageFilter extends SimpleOperator<Event> {
                 .anyMatch(attribute -> attribute.getName()
                         .equals("domain") && attribute.getValue()
                         .toString().contains(language + "."))) {
-            System.out.println("Event: " + event);
             return event;
         }
         return null;
