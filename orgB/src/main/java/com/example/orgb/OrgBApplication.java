@@ -18,6 +18,7 @@ public class OrgBApplication {
         TemplateRepository templateRepository = context.getBean(TemplateRepository.class);
         templateRepository.storeTemplate("SimpleOperator", EventOperatorB.class);
         templateRepository.storeTemplate("HeuristicsMiner", HeuristicsMiner.class);
+        templateRepository.storeTemplate("DockerSink", templates.DockerSink.class);
     }
 
 }

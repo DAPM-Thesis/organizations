@@ -33,6 +33,7 @@ public class EventSource extends WebSource<Event> {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(2)))
                 .handle((incomingEvent, sink) -> {
                     try {
+                        System.out.println(incomingEvent);
                         JsonNode root = objectMapper.readTree(incomingEvent);
                         JsonNode titleNode = root.get("title");
                         JsonNode typeNode = root.get("type");
