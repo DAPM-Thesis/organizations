@@ -20,6 +20,7 @@ public class OrgBApplication {
         templateRepository.storeTemplate("SimpleOperator", EventOperatorB.class);
         templateRepository.storeTemplate("HeuristicsMiner", HeuristicsMiner.class);
         templateRepository.storeTemplate("BehaviouralPatternsConformance", BehaviouralPatternsConformance.class);
+        templateRepository.storeTemplate("DockerSink", templates.DockerSink.class);
     }
 
 }
