@@ -2,11 +2,13 @@ package templates;
 
 import communication.message.Message;
 import communication.message.impl.Alignment;
+import communication.message.impl.Metrics;
 import communication.message.impl.event.Event;
 import communication.message.impl.petrinet.PetriNet;
 import communication.message.serialization.MessageSerializer;
 import pipeline.processingelement.Configuration;
 import pipeline.processingelement.operator.MiningOperator;
+import pipeline.processingelement.operator.SimpleOperator;
 import utils.Pair;
 
 import java.io.*;
@@ -15,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BehaviouralPatternsConformance extends MiningOperator<PetriNet> {
+public class BehaviouralPatternsConformance extends SimpleOperator<Metrics> {
 
     private final Object processLock = new Object();
 
@@ -53,7 +55,7 @@ public class BehaviouralPatternsConformance extends MiningOperator<PetriNet> {
     }
 
     @Override
-    protected Pair<PetriNet, Boolean> process(Message message, int portNumber) {
+    protected Metrics process(Message message, int portNumber) {
         synchronized (processLock) {
             try {
                 startProcess();
@@ -83,20 +85,12 @@ public class BehaviouralPatternsConformance extends MiningOperator<PetriNet> {
                 String completeness = scores.get(1);
                 String confidence = scores.get(2);
 
-                System.out.println("Conformance: " + conformance);
-                System.out.println("Completeness: " + completeness);
-                System.out.println("Confidence: " + confidence);
+                return new Metrics(Double.parseDouble(conformance), Double.parseDouble(completeness), Double.parseDouble(confidence));
 
             } catch (IOException e) {
                 throw new RuntimeException("Error during processing in BehaviouralConformance", e);
             }
         }
-        return new Pair<>(null, false);
-    }
-
-    @Override
-    protected boolean publishCondition(Pair<PetriNet, Boolean> petriNetBooleanPair) {
-        return false;
     }
 
     @Override
