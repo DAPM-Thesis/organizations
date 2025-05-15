@@ -1,19 +1,21 @@
 package templates;
 
 import communication.message.Message;
+import communication.message.impl.Alignment;
 import communication.message.impl.event.Event;
 import communication.message.impl.petrinet.PetriNet;
 import communication.message.serialization.MessageSerializer;
-import communication.message.serialization.deserialization.MessageFactory;
 import pipeline.processingelement.Configuration;
 import pipeline.processingelement.operator.MiningOperator;
 import utils.Pair;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class HeuristicsMiner extends MiningOperator<PetriNet> {
+public class BehaviouralPatternsConformance extends MiningOperator<PetriNet> {
 
     private final Object processLock = new Object();
 
@@ -21,7 +23,7 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
     private BufferedWriter jarInput;
     private BufferedReader jarOutput;
 
-    public HeuristicsMiner(Configuration configuration) {
+    public BehaviouralPatternsConformance(Configuration configuration) {
         super(configuration);
     }
 
@@ -36,7 +38,7 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
         synchronized (processLock) {
             try {
                 if (process == null || !process.isAlive()) {
-                    String jarPath = "orgB/src/main/java/templates/algorithm/heuristics-miner.jar";
+                    String jarPath = "orgB/src/main/java/templates/algorithm/behavioural-patterns-conformance.jar";
                     ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
                     processBuilder.redirectErrorStream(true);
                     process = processBuilder.start();
@@ -50,13 +52,12 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
         }
     }
 
-
     @Override
     protected Pair<PetriNet, Boolean> process(Message message, int portNumber) {
         synchronized (processLock) {
             try {
                 startProcess();
-                // Send input to the JAR
+
                 MessageSerializer serializer = new MessageSerializer();
                 message.acceptVisitor(serializer);
                 String event = serializer.getSerialization();
@@ -67,37 +68,35 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
 
                 // Collect output from the JAR with timeout
                 long startTime = System.currentTimeMillis();
-                StringBuilder stringBuilder = new StringBuilder();
+                List<String> scores = new ArrayList<>(3);
                 String line;
-                while ((line = jarOutput.readLine()) != null) {
-                    if (line.trim().isEmpty()) {
-                        break;
+                while (scores.size() < 3 && (line = jarOutput.readLine()) != null) {
+                    if (!line.trim().isEmpty()) {
+                        scores.add(line.trim());
                     }
-                    stringBuilder.append(line).append(System.lineSeparator());
                     if (System.currentTimeMillis() - startTime > 10000) {
-                        throw new IOException("Timeout while reading response from JAR");
+                        throw new IOException("Timeout while reading behavioural-patterns conformance scores from JAR");
                     }
                 }
 
-                String statusLine = jarOutput.readLine();
-                String content = stringBuilder.toString().trim();
-                boolean isSuccess = Boolean.parseBoolean(statusLine);
+                String conformance = scores.get(0);
+                String completeness = scores.get(1);
+                String confidence = scores.get(2);
 
-                if (isSuccess) {
-                    PetriNet petriNet = (PetriNet) MessageFactory.deserialize(content);
-                    return new Pair<>(petriNet, isSuccess);
-                }
-                return new Pair<>(null, isSuccess);
-            } catch (Exception e) {
-                throw new RuntimeException("Error during processing in HeuristicsMiner", e);
+                System.out.println("Conformance: " + conformance);
+                System.out.println("Completeness: " + completeness);
+                System.out.println("Confidence: " + confidence);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Error during processing in BehaviouralConformance", e);
             }
         }
+        return new Pair<>(null, false);
     }
-
 
     @Override
     protected boolean publishCondition(Pair<PetriNet, Boolean> petriNetBooleanPair) {
-        return petriNetBooleanPair.second();
+        return false;
     }
 
     @Override
@@ -124,4 +123,5 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
         }
         return true;
     }
+
 }
