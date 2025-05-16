@@ -1,7 +1,7 @@
 {
   "processing elements":[
     { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "EventSource", "inputs": [], "output": "Event", "instanceNumber": 1, "configuration": {} },
-    { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "LanguageFilter", "inputs": ["Event"], "output": "Event", "instanceNumber": 1, "configuration": {"string": "en"} },
+    { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "LanguageFilter", "inputs": ["Event"], "output": "Event", "instanceNumber": 1, "configuration": {"language": "en"} },
     { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "HeuristicsMiner",  "inputs": ["Event"],  "output": "PetriNet",  "instanceNumber": 1, "configuration": {} },
     { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "PetriNetSink",  "inputs": ["PetriNet"],  "output": null,  "instanceNumber": 1, "configuration": {} }
   ],
