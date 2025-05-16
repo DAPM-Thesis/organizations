@@ -11,6 +11,7 @@
     <modules>
         <module>orgA</module>
         <module>orgB</module>
+        <module>orgC</module>
     </modules>
 
 </project>

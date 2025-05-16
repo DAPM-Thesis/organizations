@@ -1,6 +1,7 @@
-package com.example.demo;
+package com.example.orgc;
 
-import candidate_validation.*;
+import candidate_validation.PipelineCandidate;
+import candidate_validation.ValidatedPipeline;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -8,8 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 import pipeline.Pipeline;
 import pipeline.PipelineBuilder;
 import pipeline.service.PipelineExecutionService;
-import repository.TemplateRepository;
-import templates.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,27 +17,20 @@ import java.nio.file.Paths;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"controller", "pipeline", "communication", "repository"})
-public class OrgAApplication {
+public class OrgCApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(OrgAApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(OrgCApplication.class, args);
 
-        TemplateRepository templateRepository = context.getBean(TemplateRepository.class);
-        templateRepository.storeTemplate("SimpleSource", SourceA.class);
-        templateRepository.storeTemplate("SimpleSink", SinkA.class);
-        templateRepository.storeTemplate("EventSource", EventSource.class);
-        templateRepository.storeTemplate("PetriNetSink", PetriNetSink.class);
-        templateRepository.storeTemplate("LanguageFilter", LanguageFilter.class);
-
-        String orgID = "orgA";
+        String orgID = "orgC";
         String contents;
         try {
-           contents = Files.readString(Paths.get("orgA/src/main/resources/simple_pipeline.json"));
+            contents = Files.readString(Paths.get("orgC/src/main/resources/simple_pipeline.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        URI configURI = Paths.get("orgA/src/main/resources/config_schemas").toUri();
+        URI configURI = Paths.get("orgC/src/main/resources/config_schemas").toUri();
         PipelineCandidate pipelineCandidate = new PipelineCandidate(contents, configURI);
         ValidatedPipeline validatedPipeline = new ValidatedPipeline(pipelineCandidate);
 
