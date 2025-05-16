@@ -101,8 +101,8 @@ public class HeuristicsMiner extends MiningOperator<PetriNet> {
     }
 
     @Override
-    public boolean stop() {
-        super.stop();
+    public boolean terminate() {
+        super.terminate();
         synchronized (processLock) {
             try {
                 if (jarInput != null) {

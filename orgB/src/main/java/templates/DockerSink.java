@@ -31,9 +31,9 @@ public class DockerSink extends Sink {
     }
 
     @Override
-    public boolean stop() {
-        super.stop();
-        System.out.println("Docker Sink stopped.");
+    public boolean terminate() {
+        super.terminate();
+        System.out.println("Docker Sink terminated.");
         return true;
     }
 

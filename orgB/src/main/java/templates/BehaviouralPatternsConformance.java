@@ -86,8 +86,8 @@ public class BehaviouralPatternsConformance extends SimpleOperator<Metrics> {
     }
 
     @Override
-    public boolean stop() {
-        super.stop();
+    public boolean terminate() {
+        super.terminate();
         synchronized (processLock) {
             try {
                 if (jarInput != null) {
