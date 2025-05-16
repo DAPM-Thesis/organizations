@@ -12,11 +12,11 @@
     <title>PetriNet Visualizer</title>
 </head>
 <body>
-<img id="petriNetImg" src="sink_outputs/petriNet.svg" alt="Petri Net" />
+<img id="petriNetImg" src="../outputs/petriNet.svg" alt="Petri Net" />
 <script type="text/javascript">
     setInterval(function() {
-        var img = document.getElementById('petriNetImg');
-        img.src = "sink_outputs/petriNet.svg?t=" + new Date().getTime();
+        const img = document.getElementById('petriNetImg');
+        img.src = "../outputs/petriNet.svg?t=" + new Date().getTime();
     }, 1000);
 </script>
 </body>

@@ -1,15 +1,12 @@
 package templates;
 
+
 import communication.message.Message;
-import communication.message.impl.Alignment;
 import communication.message.impl.Metrics;
 import communication.message.impl.event.Event;
-import communication.message.impl.petrinet.PetriNet;
-import communication.message.serialization.MessageSerializer;
 import pipeline.processingelement.Configuration;
-import pipeline.processingelement.operator.MiningOperator;
 import pipeline.processingelement.operator.SimpleOperator;
-import utils.Pair;
+import utils.JsonUtil;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -59,10 +56,7 @@ public class BehaviouralPatternsConformance extends SimpleOperator<Metrics> {
         synchronized (processLock) {
             try {
                 startProcess();
-
-                MessageSerializer serializer = new MessageSerializer();
-                message.acceptVisitor(serializer);
-                String event = serializer.getSerialization();
+                String event = JsonUtil.toJson(message);
 
                 jarInput.write(event);
                 jarInput.newLine();
@@ -80,11 +74,9 @@ public class BehaviouralPatternsConformance extends SimpleOperator<Metrics> {
                         throw new IOException("Timeout while reading behavioural-patterns conformance scores from JAR");
                     }
                 }
-
                 String conformance = scores.get(0);
                 String completeness = scores.get(1);
                 String confidence = scores.get(2);
-
                 return new Metrics(Double.parseDouble(conformance), Double.parseDouble(completeness), Double.parseDouble(confidence));
 
             } catch (IOException e) {

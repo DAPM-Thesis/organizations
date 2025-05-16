@@ -13,7 +13,7 @@ public class LanguageFilter extends SimpleOperator<Event> {
 
     public LanguageFilter(Configuration configuration) {
         super(configuration);
-        language = configuration.get("string").toString().toLowerCase();
+        language = configuration.get("language").toString().toLowerCase();
     }
 
     @Override

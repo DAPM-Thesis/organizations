@@ -4,8 +4,8 @@
   "title": "orgA LanguageFilter Config",
   "type": "object",
   "properties": {
-    "string": { "type":  "string", "minLength": 2 }
+    "language": { "type":  "string", "minLength": 2, "maxLength": 2}
   },
-  "required": ["string"],
+  "required": ["language"],
   "additionalProperties": false
 }

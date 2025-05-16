@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+    <title>Conformance Scores Pie Chart Visualizer</title>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<body>
+<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+<script>
+    const xValues = ["English", "Russian"];
+    const barColors = [
+        "#001da5",
+        "#bd0000",
+    ];
+
+    const pieChart = new Chart(document.getElementById("myChart"), {
+        type: "pie",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: [0, 0]
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: "English vs Russian Conformance Scores Wins"
+            }
+        }
+    });
+
+    setInterval(async function () {
+        try {
+            const response = await fetch("../outputs/scores.txt?" + new Date().getTime());
+            if (!response.ok) return;
+            const text = await response.text();
+            pieChart.data.datasets[0].data = text.split('\n')
+                .filter(line => line !== '')
+                .map(Number);
+            pieChart.update();
+        } catch (err) {
+            console.error("Update error in pie chart:", err);
+        }
+    }, 2000);
+</script>
+</body>
+</html>

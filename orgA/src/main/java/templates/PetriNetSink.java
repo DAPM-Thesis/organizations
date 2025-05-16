@@ -38,7 +38,7 @@ public class PetriNetSink extends Sink {
         try {
             fromGraph(dotGraph)
                     .render(SVG)
-                    .toFile(new File("orgA/src/main/resources/sink_outputs/petriNet.svg"));
+                    .toFile(new File("orgA/src/main/resources/sinks/outputs/petriNet.svg"));
         } catch (Exception e) {
             throw new RuntimeException("Failed to render PetriNet", e);
         }

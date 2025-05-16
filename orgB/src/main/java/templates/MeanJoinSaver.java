@@ -6,6 +6,8 @@ import pipeline.processingelement.Configuration;
 import pipeline.processingelement.Sink;
 import utils.Pair;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,14 +16,16 @@ public class MeanJoinSaver extends Sink {
     private final List<Metrics> recentMessages;
     private int firstCount = 0;
     private int secondCount = 0;
-    private final int firstPort = 1;
-    private final int secondPort = 2;
+    private final int firstPort = 0;
+    private final int secondPort = 1;
+    private int firstWins = 0;
+    private int secondWins = 0;
 
     public MeanJoinSaver(Configuration configuration) {
         super(configuration);
         recentMessages = new ArrayList<>(2);
-        recentMessages.set(0, null);
-        recentMessages.set(1, null);
+        recentMessages.add(null);
+        recentMessages.add(null);
     }
 
     @Override
@@ -68,7 +72,20 @@ public class MeanJoinSaver extends Sink {
     }
 
     private void saveMetrics(List<Metrics> recentMessages) {
+        System.out.println("Saving metrics: " + recentMessages.get(0) + " and " + recentMessages.get(1));
+        double firstVal = recentMessages.get(firstPort).getMetrics().stream().mapToDouble(Double::doubleValue).sum();
+        double secondVal = recentMessages.get(secondPort).getMetrics().stream().mapToDouble(Double::doubleValue).sum();
+        if (firstVal > secondVal) { firstWins++; }
+        else { secondWins++; }
+        String toSave = firstWins + "\n" + secondWins;
 
+        try {
+            FileWriter fw = new FileWriter("orgB/src/main/resources/sinks/outputs/scores.txt", false);
+            fw.write(toSave);
+            fw.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void reset() {

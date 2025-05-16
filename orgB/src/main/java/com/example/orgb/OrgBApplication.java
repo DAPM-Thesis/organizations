@@ -21,6 +21,7 @@ public class OrgBApplication {
         templateRepository.storeTemplate("HeuristicsMiner", HeuristicsMiner.class);
         templateRepository.storeTemplate("BehaviouralPatternsConformance", BehaviouralPatternsConformance.class);
         templateRepository.storeTemplate("DockerSink", templates.DockerSink.class);
+        templateRepository.storeTemplate("MeanJoinSaver", templates.MeanJoinSaver.class);
     }
 
 }
