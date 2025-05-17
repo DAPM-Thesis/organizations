@@ -4,7 +4,10 @@
   "title": "orgA LanguageFilter Config",
   "type": "object",
   "properties": {
-    "language": { "type":  "string", "minLength": 2, "maxLength": 2}
+    "language": {
+      "type":  "string",
+      "enum": ["de", "dk", "en", "it", "ne", "ru"]
+    }
   },
   "required": ["language"],
   "additionalProperties": false
