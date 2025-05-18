@@ -1,13 +1,21 @@
 package templates;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import communication.message.Message;
 import communication.message.impl.event.Attribute;
 import communication.message.impl.event.Event;
+import okhttp3.OkHttpClient;
 import pipeline.processingelement.Configuration;
 import pipeline.processingelement.Sink;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class SinkA extends Sink {
 
@@ -30,8 +38,47 @@ public class SinkA extends Sink {
 //        } else {
 //            System.out.println("SinkA:- Received non-Event message: " + message);
 //        }
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(0, TimeUnit.MILLISECONDS)
+                .retryOnConnectionFailure(true)
+                .build();
         Event e = (Event) message;
-        System.out.println(this + " received: " + "  caseID:   " + e.getCaseID()+",  activity:   " + e.getActivity() +",  timestamp:" + e.getTimestamp()+ " on port " + portNumber);
+        System.out.println(this + " received: " + "  caseID:   " + e.getCaseID()+",  activity:   "
+                + e.getActivity() +",  timestamp:" + e.getTimestamp()+ " on port " + portNumber);
+        // Convert the full Event object to JSON string
+        String eventJson = String.format(
+                "{\"caseID\":\"%s\",\"activity\":\"%s\",\"timestamp\":\"%s\"}",
+                e.getCaseID(),
+                e.getActivity(),
+                e.getTimestamp().toString(),
+                e.getAttributes()
+        );
+        try {
+            eventJson = new ObjectMapper().writeValueAsString(e);
+        } catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        // Wrap it in a minimal payload: { "result": "..." }
+        String payload = null;
+        try {
+            payload = String.format("{\"result\": %s}", new ObjectMapper().writeValueAsString(eventJson));
+        } catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
+        }
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(payload, headers);
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.postForObject("http://localhost:8081/sink/mining-result/save", request, String.class);
+            System.out.println("Event sent to ingestion-service for DB storage.");
+        } catch (Exception ex) {
+            System.err.println("Failed to send event to ingestion-service: " + ex.getMessage());
+        }
     }
 
     @Override
