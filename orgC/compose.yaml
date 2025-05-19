@@ -18,7 +18,7 @@ services:
     ports:
       - "42181:2181"
 
-  kafka-B:
+  kafka-C:
     hostname: kafka-C
     container_name: kafka-C
     networks:
