@@ -23,6 +23,7 @@ public class OrgCApplication {
         ConfigurableApplicationContext context = SpringApplication.run(OrgCApplication.class, args);
 
         String orgID = "orgC";
+        String pipelineID = "orgC_pipeline";
         String contents;
         try {
             contents = Files.readString(Paths.get("orgC/src/main/resources/simple_pipeline.json"));
@@ -35,10 +36,9 @@ public class OrgCApplication {
         ValidatedPipeline validatedPipeline = new ValidatedPipeline(pipelineCandidate);
 
         PipelineBuilder pipelineBuilder = context.getBean(PipelineBuilder.class);
-
-        Pipeline pipeline =  pipelineBuilder.buildPipeline(orgID, validatedPipeline);
+        pipelineBuilder.buildPipeline(orgID, pipelineID, validatedPipeline);
 
         PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
-        executionService.start(pipeline);
+        executionService.start(pipelineID);
     }
 }
