@@ -22,7 +22,6 @@ public class OrgCApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(OrgCApplication.class, args);
 
-        String orgID = "orgC";
         String pipelineID = "orgC_pipeline";
         String contents;
         try {
@@ -36,7 +35,7 @@ public class OrgCApplication {
         ValidatedPipeline validatedPipeline = new ValidatedPipeline(pipelineCandidate);
 
         PipelineBuilder pipelineBuilder = context.getBean(PipelineBuilder.class);
-        pipelineBuilder.buildPipeline(orgID, pipelineID, validatedPipeline);
+        pipelineBuilder.buildPipeline(pipelineID, validatedPipeline);
 
         PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
         executionService.start(pipelineID);
