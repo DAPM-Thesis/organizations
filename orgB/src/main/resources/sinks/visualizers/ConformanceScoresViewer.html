@@ -13,7 +13,10 @@
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <body>
-<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+<div id="chartContainer" style="display: flex; flex-direction: column; align-items: center;">
+    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+    <div id="barValues" style="text-align: center; margin-top: 1em; font-family: sans-serif;"></div>
+</div>
 <script>
     const xValues = ["English", "Russian"];
     const barColors = [
@@ -21,8 +24,8 @@
         "#bd0000",
     ];
 
-    const pieChart = new Chart(document.getElementById("myChart"), {
-        type: "pie",
+    const barChart = new Chart(document.getElementById("myChart"), {
+        type: "bar",
         data: {
             labels: xValues,
             datasets: [{
@@ -33,7 +36,16 @@
         options: {
             title: {
                 display: true,
-                text: "English vs Russian Conformance Scores Wins"
+                text: "English vs Russian Average Conformance Scores"
+            },
+            legend: {display: false},
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }]
             }
         }
     });
@@ -43,12 +55,23 @@
             const response = await fetch("../outputs/scores.txt?" + new Date().getTime());
             if (!response.ok) return;
             const text = await response.text();
-            pieChart.data.datasets[0].data = text.split('\n')
+            const values = text.split('\n')
                 .filter(line => line !== '')
                 .map(Number);
-            pieChart.update();
+            barChart.data.datasets[0].data = values;
+            barChart.update();
+
+            const barValuesDiv = document.getElementById('barValues');
+            barValuesDiv.innerHTML = `
+            <span style="color:#001da5;margin-right:2em;">
+                English: <strong>${values[0]?.toFixed(2) ?? '0.00'}</strong>
+            </span>
+            <span style="color:#bd0000;">
+                Russian: <strong>${values[1]?.toFixed(2) ?? '0.00'}</strong>
+            </span>
+        `;
         } catch (err) {
-            console.error("Update error in pie chart:", err);
+            console.error("Update error in bar chart:", err);
         }
     }, 2000);
 </script>

@@ -18,8 +18,10 @@ public class MeanJoinSaver extends Sink {
     private int secondCount = 0;
     private final int firstPort = 0;
     private final int secondPort = 1;
-    private int firstWins = 0;
-    private int secondWins = 0;
+    private int firstAvgCount = 0;
+    private int secondAvgCount = 0;
+    private double firstAvg = 0.0;
+    private double secondAvg = 0.0;
 
     public MeanJoinSaver(Configuration configuration) {
         super(configuration);
@@ -73,11 +75,17 @@ public class MeanJoinSaver extends Sink {
 
     private void saveMetrics(List<Metrics> recentMessages) {
         System.out.println("Saving metrics: " + recentMessages.get(0) + " and " + recentMessages.get(1));
-        double firstVal = recentMessages.get(firstPort).getMetrics().stream().mapToDouble(Double::doubleValue).sum();
-        double secondVal = recentMessages.get(secondPort).getMetrics().stream().mapToDouble(Double::doubleValue).sum();
-        if (firstVal > secondVal) { firstWins++; }
-        else { secondWins++; }
-        String toSave = firstWins + "\n" + secondWins;
+        double newFirst = recentMessages.get(firstPort).getMetrics().getFirst();
+        double newSecond = recentMessages.get(secondPort).getMetrics().getFirst();
+
+        firstAvgCount++;
+        firstAvg = firstAvg + (newFirst - firstAvg) / firstAvgCount;
+
+        secondAvgCount++;
+        secondAvg = secondAvg + (newSecond - secondAvg) / secondAvgCount;
+
+        String toSave = firstAvg + "\n" + secondAvg;
+
 
         try {
             FileWriter fw = new FileWriter("orgB/src/main/resources/sinks/outputs/scores.txt", false);
