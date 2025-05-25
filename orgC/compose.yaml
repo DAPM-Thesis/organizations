@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-  zookeeper-2:
+  zookeeper-3:
     image: confluentinc/cp-zookeeper:7.4.4
     container_name: zookeeper-3
     restart: always
