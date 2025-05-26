@@ -17,7 +17,10 @@ public class SinkA extends Sink {
 
     @Override
     public void observe(Pair<Message, Integer> messageAndPortNumber) {
-        System.out.println(this + " received: " + messageAndPortNumber.first() + " on port " + messageAndPortNumber.second());
+        System.out.println("SinkA!!");
+        Event e = (Event) messageAndPortNumber.first();
+        System.out.println(this + " received: " + "  caseID:   " + e.getCaseID()+",  activity:   "
+                + e.getActivity() +",  timestamp:" + e.getTimestamp()+ " on port " + messageAndPortNumber.second());
     }
 
     @Override

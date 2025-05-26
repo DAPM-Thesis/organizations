@@ -8,7 +8,7 @@ import repository.TemplateRepository;
 import templates.*;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controller", "pipeline", "communication", "repository"})
+@ComponentScan(basePackages = {"com.example.orgA","controller", "pipeline", "communication", "repository"})
 public class OrgAApplication {
 
     public static void main(String[] args) {
