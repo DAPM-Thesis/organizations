@@ -22,6 +22,8 @@ services:
     hostname: kafka-B
     container_name: kafka-B
     restart: always
+    depends_on:
+      - zookeeper-2
     networks:
       - kafka-cluster
     image: confluentinc/cp-kafka:latest

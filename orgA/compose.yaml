@@ -21,6 +21,8 @@ services:
   kafka-A:
     hostname: kafka-A
     container_name: kafka-A
+    depends_on:
+      - zookeeper-1
     networks:
       - kafka-cluster
     image: confluentinc/cp-kafka:latest

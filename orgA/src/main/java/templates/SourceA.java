@@ -15,8 +15,8 @@ import java.time.Duration;
 public class SourceA extends SimpleSource<Event> {
 
     private static final String SSE_URL      = "https://stream.wikimedia.org/v2/stream/recentchange";
-    private static final long   FILTERING_ID = 2L;
-    private static final long   ATTRIBUTE_ID = 2L;
+    private static final long   FILTERING_ID = 1L;
+    private static final long   ATTRIBUTE_ID = 1L;
     private static final String SOURCE_ID    = "wiki-edit";
 
     private FiltrationProcess       filtrationProcess;
@@ -59,8 +59,12 @@ public class SourceA extends SimpleSource<Event> {
         }
 
         json = anonymizationProcess.apply(json);
-
-        Event dapmEvent = attributeProcess.extractEvent(json);
-        return dapmEvent;
+        if(attributeProcess == null)
+            System.out.println("No Attribute found!!!");
+        else {
+            Event dapmEvent = attributeProcess.extractEvent(json);
+            return dapmEvent;
+        }
+        return null;
     }
 }
