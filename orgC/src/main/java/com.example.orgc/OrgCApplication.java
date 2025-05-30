@@ -1,12 +1,10 @@
 package com.example.orgc;
 
-import candidate_validation.PipelineCandidate;
 import candidate_validation.ValidatedPipeline;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import pipeline.Pipeline;
 import pipeline.PipelineBuilder;
 import pipeline.service.PipelineExecutionService;
 
@@ -31,8 +29,7 @@ public class OrgCApplication {
         }
 
         URI configURI = Paths.get("orgC/src/main/resources/config_schemas").toUri();
-        PipelineCandidate pipelineCandidate = new PipelineCandidate(contents, configURI);
-        ValidatedPipeline validatedPipeline = new ValidatedPipeline(pipelineCandidate);
+        ValidatedPipeline validatedPipeline = new ValidatedPipeline(contents, configURI);
 
         PipelineBuilder pipelineBuilder = context.getBean(PipelineBuilder.class);
         pipelineBuilder.buildPipeline(pipelineID, validatedPipeline);
