@@ -1,8 +1,67 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://www.dapm.org/config/ingestion-service_simplesource_config_schema.json",
-  "title": "ingestion-service SimpleSource Config",
+  "$id":   "https://www.dapm.org/config/ingestion-service_simplesource_config_schema.json",
+  "title": "SimpleSource Configuration for Ingestion Service",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "eventSource": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "SSE or HTTP endpoint URL to pull the raw events from"
+        }
+      },
+      "required": ["url"],
+      "additionalProperties": false
+    },
+
+    "filters": {
+      "type": "object",
+      "description": "A map of filter‐name and filter‐value (all strings)",
+      "additionalProperties": { "type": "string" }
+    },
+
+    "attributeMapping": {
+      "type": "object",
+      "description": "How to extract the caseId, activity, timestamp from each event",
+      "properties": {
+        "caseId":   { "type": "string" },
+        "activity": { "type": "string" },
+        "timeStamp":{ "type": "string" }
+      },
+      "required": ["caseId","activity","timeStamp"],
+      "additionalProperties": false
+    },
+
+    "anonymization": {
+      "type": "object",
+      "description": "Rules for pseudonymization and suppression",
+      "properties": {
+        "pseudonymization": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of fields to pseudonymize"
+        },
+        "suppression": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of fields to remove from metadata"
+        },
+        "uniqueField": {
+          "type": "string",
+          "description": "Field whose value need to identify unique value for the pseudonym"
+        },
+        "dataSourceId": {
+          "type": "string",
+          "description": "Event Source name from where events are ingested and needed for making mapping table in MongoDB."
+        }
+      },
+      "required": ["pseudonymization","suppression","uniqueField","dataSourceId"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["eventSource","filters","attributeMapping","anonymization"],
   "additionalProperties": false
 }

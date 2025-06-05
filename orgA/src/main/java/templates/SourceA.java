@@ -26,7 +26,6 @@ public class SourceA extends SimpleSource<Event> {
     public SourceA(Configuration configuration) {
         super(configuration);
     }
-
     @Override
     protected Event process() {
         // lazy-init on first call
