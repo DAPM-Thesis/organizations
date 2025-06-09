@@ -1,0 +1,68 @@
+{
+  "processing elements":[
+    { "organizationID": "ingestion-service", "hostURL": "http://localhost:8081", "templateID": "SimpleSource", "inputs": [], "output": "Event", "instanceNumber": 1,
+      "configuration": {
+        "eventSource": {
+          "url": "https://stream.wikimedia.org/v2/stream/recentchange"
+        },
+        "filters": {
+          "bot": "false"
+        },
+        "attributeMapping": {
+          "caseId": "wiki",
+          "activity": "type",
+          "timeStamp": "meta.dt"
+        },
+        "anonymization": {
+          "dataSourceId": "wiki-edit",
+          "pseudonymization": ["user", "ip"],
+          "suppression": ["comment"],
+          "uniqueField":"user"
+        }
+      }
+    },
+    { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "HeuristicsMiner",  "inputs": ["Event"],  "output": "PetriNet",  "instanceNumber": 1, "configuration": {}
+    },
+    { "organizationID": "sink-service", "hostURL": "http://localhost:8086", "templateID": "PetriNetSink",  "inputs": ["PetriNet"],  "output": null,  "instanceNumber": 1, "configuration": {} }
+  ],
+
+  "channels": [
+    {
+      "publisher": { "organizationID": "ingestion-service", "hostURL": "http://localhost:8081", "templateID": "SimpleSource", "inputs": [], "output": "Event", "instanceNumber": 1, "configuration": {
+        "eventSource": {
+          "url": "https://stream.wikimedia.org/v2/stream/recentchange"
+        },
+        "filters": {
+          "bot": "false"
+        },
+        "attributeMapping": {
+          "caseId": "wiki",
+          "activity": "type",
+          "timeStamp": "meta.dt"
+        },
+        "anonymization": {
+          "dataSourceId": "wiki-edit",
+          "pseudonymization": ["user", "ip"],
+          "suppression": ["comment"],
+          "uniqueField":"user"
+        }
+      }
+      },
+      "subscribers": [
+        {
+          "processing element": { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "HeuristicsMiner", "inputs": ["Event"], "output": "PetriNet", "instanceNumber": 1, "configuration": {} },
+          "portNumber": 1
+        }
+      ]
+    },
+    {
+      "publisher": { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "HeuristicsMiner", "inputs": ["Event"], "output": "PetriNet", "instanceNumber": 1, "configuration": {} },
+      "subscribers": [
+        {
+          "processing element": { "organizationID": "sink-service", "hostURL": "http://localhost:8086", "templateID": "PetriNetSink", "inputs": ["PetriNet"], "output": null, "instanceNumber": 1, "configuration": {} },
+          "portNumber": 1
+        }
+      ]
+    }
+  ]
+}
