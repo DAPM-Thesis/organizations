@@ -23,7 +23,7 @@ public class OrgCApplication {
         String pipelineID = "orgC_pipeline";
         String contents;
         try {
-            contents = Files.readString(Paths.get("orgC/src/main/resources/heuristic-miner_pipeline_with_config.json"));
+            contents = Files.readString(Paths.get("orgC/src/main/resources/simple_pipeline_with_config.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

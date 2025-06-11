@@ -6,10 +6,10 @@
           "url": "https://stream.wikimedia.org/v2/stream/recentchange"
         },
         "filters": {
-          "bot": "false"
+          "wiki": "enwiki"
         },
         "attributeMapping": {
-          "caseId": "wiki",
+          "caseId": "bot",
           "activity": "type",
           "timeStamp": "meta.dt"
         },

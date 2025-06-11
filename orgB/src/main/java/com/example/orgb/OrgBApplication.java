@@ -18,7 +18,7 @@ public class OrgBApplication {
 
         TemplateRepository templateRepository = context.getBean(TemplateRepository.class);
         templateRepository.storeTemplate("SimpleOperator", EventOperatorB.class);
-        templateRepository.storeTemplate("HeuristicsMinerDiscovery", HeuristicsMiner.class);
+        templateRepository.storeTemplate("HeuristicsMiner", HeuristicsMiner.class);
         templateRepository.storeTemplate("BehaviouralPatternsConformance", BehaviouralPatternsConformance.class);
         templateRepository.storeTemplate("DockerSink", templates.DockerSink.class);
         templateRepository.storeTemplate("MeanJoinSaver", templates.MeanJoinSaver.class);
