@@ -1,23 +1,22 @@
 package templates;
 
-import com.example.orgb.service.HeuristicMinerClient;
 import com.example.orgb.service.SimpleHeuristicMiner;
 import com.example.orgb.service.SimpleHeuristicMiner.DirectFollow;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import communication.message.Message;
 import communication.message.impl.event.*;
 import pipeline.processingelement.Configuration;
 import pipeline.processingelement.operator.SimpleOperator;
 
+import java.time.Instant;
 import java.util.*;
 
 public class EventOperatorB extends SimpleOperator<Event> {
 
-//    private final HeuristicMinerClient miner;
 private final SimpleHeuristicMiner miner = new SimpleHeuristicMiner();
     public EventOperatorB(Configuration configuration) {
         super(configuration);
-//        String jarPath = "orgB/src/main/java/templates/algorithm/heuristics-miner.jar";
-//        this.miner = new HeuristicMinerClient(jarPath);
     }
 
     @Override
@@ -36,31 +35,41 @@ private final SimpleHeuristicMiner miner = new SimpleHeuristicMiner();
 
         // 2) Fetch metrics
         List<DirectFollow> metrics = miner.getMetrics();
-
+        long timestamp = Instant.parse(e.getTimestamp()).toEpochMilli();
         // 3) Print + attach
         System.out.println("Heuristic‐miner metrics:");
-        Map<String,Attribute<?>> miningResultMap = new LinkedHashMap<>();
+        List<Map<String, Object>> arcList = new ArrayList<>();
         for (DirectFollow m : metrics) {
-            //System.out.println("  → " + df);
             System.out.println("  → " + m);
             System.out.println("hm_from:" + m.from);
             System.out.println("hm_to-" + m.to);
             System.out.println("frequency-" + m.frequency);
             System.out.println("dependency-" + m.dependency);
-
-            miningResultMap.put("hm_from",
-                    new Attribute<>("hm_from", m.from));
-            miningResultMap.put("hm_to",
-                    new Attribute<>("hm_to", m.to));
-            miningResultMap.put("frequency",
-                    new Attribute<>("frequency", String.valueOf(m.frequency)));
-            miningResultMap.put("dependency",
-                    new Attribute<>("dependency",  String.valueOf(m.dependency)));
+            Map<String, Object> arc = new HashMap<>();
+            arc.put("arc_from", m.from);
+            arc.put("arc_to", m.to);
+            arc.put("frequency", m.frequency);
+            arc.put("dependency", m.dependency);
+            arc.put("timestamp", timestamp);
+            arcList.add(arc);
         }
-        e.getAttributes().add(
-                new Attribute<>("miningresult", null, miningResultMap)
+        String payload;
+        try {
+            payload = new ObjectMapper().writeValueAsString(arcList);
+        } catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
+        }
+        System.out.println("Payload:" + payload);
+        Set<Attribute<?>> newAttributes = new HashSet<>(e.getAttributes());
+        Attribute<String> miningMetrics = new Attribute<>("mining_metrics", payload);
+        newAttributes.add(miningMetrics);
+        Event newEvent = new Event(
+                e.getCaseID(),
+                e.getActivity(),
+                e.getTimestamp(),
+                newAttributes
         );
-        return e;
+        return newEvent;
     }
     @Override
     public boolean terminate() {
