@@ -9,41 +9,48 @@
             margin: 0;
         }
     </style>
-    <title>Conformance Scores Pie Chart Visualizer</title>
+    <title>Scores Bar Chart Visualizer</title>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <body>
 <div id="chartContainer" style="display: flex; flex-direction: column; align-items: center;">
-    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-    <div id="barValues" style="text-align: center; margin-top: 1em; font-family: sans-serif;"></div>
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
 </div>
 <script>
-    const xValues = ["English", "Russian"];
-    const barColors = [
-        "#001da5",
-        "#bd0000",
-    ];
+    const categories = ["Conformance", "Completeness", "Confidence"];
+    const englishColor = "#001da5";
+    const russianColor = "#bd0000";
 
     const barChart = new Chart(document.getElementById("myChart"), {
         type: "bar",
         data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                data: [0, 0]
-            }]
+            labels: categories,
+            datasets: [
+                {
+                    label: "English",
+                    backgroundColor: englishColor,
+                    data: [0, 0, 0]
+                },
+                {
+                    label: "Russian",
+                    backgroundColor: russianColor,
+                    data: [0, 0, 0]
+                }
+            ]
         },
         options: {
             title: {
                 display: true,
-                text: "English vs Russian Average Conformance Scores"
+                text: "English vs Russian Wikipedia Quality Scores"
             },
-            legend: {display: false},
+            legend: {display: true},
             scales: {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,
-                        precision: 0
+                        stepSize: 0.2,
+                        min: 0,
+                        max: 1
                     }
                 }]
             }
@@ -57,19 +64,13 @@
             const text = await response.text();
             const values = text.split('\n')
                 .filter(line => line !== '')
-                .map(Number);
-            barChart.data.datasets[0].data = values;
-            barChart.update();
+                .map(line => Number(Number(line).toFixed(2)));
 
-            const barValuesDiv = document.getElementById('barValues');
-            barValuesDiv.innerHTML = `
-            <span style="color:#001da5;margin-right:2em;">
-                English: <strong>${values[0]?.toFixed(2) ?? '0.00'}</strong>
-            </span>
-            <span style="color:#bd0000;">
-                Russian: <strong>${values[1]?.toFixed(2) ?? '0.00'}</strong>
-            </span>
-        `;
+            if (values.length >= 6) {
+                barChart.data.datasets[0].data = [values[0], values[2], values[4]]; // English
+                barChart.data.datasets[1].data = [values[1], values[3], values[5]]; // Russian
+                barChart.update();
+            }
         } catch (err) {
             console.error("Update error in bar chart:", err);
         }

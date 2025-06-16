@@ -18,10 +18,15 @@ public class MeanJoinSaver extends Sink {
     private int secondCount = 0;
     private final int firstPort = 0;
     private final int secondPort = 1;
-    private int firstAvgCount = 0;
-    private int secondAvgCount = 0;
-    private double firstAvg = 0.0;
-    private double secondAvg = 0.0;
+    private int count = 0;
+
+    private double firstAvgConformance = 0.0;
+    private double secondAvgConformance = 0.0;
+    private double firstAvgCompleteness = 0.0;
+    private double secondAvgCompleteness = 0.0;
+    private double firstAvgConfidence = 0.0;
+    private double secondAvgConfidence = 0.0;
+
 
     public MeanJoinSaver(Configuration configuration) {
         super(configuration);
@@ -75,17 +80,26 @@ public class MeanJoinSaver extends Sink {
 
     private void saveMetrics(List<Metrics> recentMessages) {
         System.out.println("Saving metrics: " + recentMessages.get(0) + " and " + recentMessages.get(1));
-        double newFirst = recentMessages.get(firstPort).getMetrics().getFirst();
-        double newSecond = recentMessages.get(secondPort).getMetrics().getFirst();
+        double newFirstConformance = recentMessages.get(firstPort).getMetrics().getFirst();
+        double newFirstCompleteness = recentMessages.get(firstPort).getMetrics().get(1);
+        double newFirstConfidence = recentMessages.get(firstPort).getMetrics().getLast();
 
-        firstAvgCount++;
-        firstAvg = firstAvg + (newFirst - firstAvg) / firstAvgCount;
+        double newSecondConformance = recentMessages.get(secondPort).getMetrics().getFirst();
+        double newSecondCompleteness = recentMessages.get(secondPort).getMetrics().get(1);
+        double newSecondConfidence = recentMessages.get(secondPort).getMetrics().getLast();
 
-        secondAvgCount++;
-        secondAvg = secondAvg + (newSecond - secondAvg) / secondAvgCount;
+        count++;
+        firstAvgConformance = firstAvgConformance + (newFirstConformance - firstAvgConformance) / count;
+        firstAvgCompleteness = firstAvgCompleteness + (newFirstCompleteness - firstAvgCompleteness) / count;
+        firstAvgConfidence = firstAvgConfidence + (newFirstConfidence - firstAvgConfidence) / count;
 
-        String toSave = firstAvg + "\n" + secondAvg;
+        secondAvgConformance = secondAvgConformance + (newSecondConformance - secondAvgConformance) / count;
+        secondAvgCompleteness = secondAvgCompleteness + (newSecondCompleteness - secondAvgCompleteness) / count;
+        secondAvgConfidence = secondAvgConfidence +(newSecondConfidence - secondAvgConfidence) / count;
 
+        String toSave = firstAvgConformance + "\n" + secondAvgConformance +
+                "\n" + firstAvgCompleteness + "\n" + secondAvgCompleteness +
+                "\n" + firstAvgConfidence + "\n" + secondAvgConfidence;
 
         try {
             FileWriter fw = new FileWriter("orgB/src/main/resources/sinks/outputs/scores.txt", false);
