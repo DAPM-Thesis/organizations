@@ -25,7 +25,16 @@ public class OrgCApplication {
         String pipelineID = "orgC_pipeline";
         String contents;
         try {
-            contents = Files.readString(Paths.get("orgC/src/main/resources/simple_pipeline.json"));
+            contents = Files.readString(Paths.get("orgC/src/main/resources/concrete_pipeline.json"));
+            //contents = Files.readString(Paths.get("orgC/src/main/resources/simple_pipeline.json"));
+            //contents = Files.readString(Paths.get("orgC/src/main/resources/heuristics_miner_pipeline.json"));
+            //contents = Files.readString(Paths.get("orgC/src/main/resources/pipelines/concrete_complex.json"));
+
+
+            //contents = Files.readString(Paths.get("orgC/src/main/resources/pipelines/simple_2source.json"));
+            //contents = Files.readString(Paths.get("orgC/src/main/resources/pipelines/concrete_1.json"));
+            //contents = Files.readString(Paths.get("orgC/src/main/resources/pipelines/concrete_2.json"));
+            //contents = Files.readString(Paths.get("orgC/src/main/resources/pipelines/concrete_3.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,5 +48,19 @@ public class OrgCApplication {
 
         PipelineExecutionService executionService = context.getBean(PipelineExecutionService.class);
         executionService.start(pipelineID);
+
+        // terminate the pipeline after 30 secs:
+        /*
+        try {
+            Thread.sleep(120_000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+        executionService.terminate(pipelineID);
+
+         */
+
+
     }
 }

@@ -37,7 +37,8 @@ public class BehaviouralPatternsConformance extends SimpleOperator<Metrics> {
         synchronized (processLock) {
             try {
                 if (process == null || !process.isAlive()) {
-                    String jarPath = "orgB/src/main/java/templates/algorithm/behavioural-patterns-conformance.jar";
+                    //String jarPath = "orgB/src/main/java/templates/algorithm/behavioural-patterns-conformance.jar";
+                    String jarPath = "C:/Users/Razer/IdeaProjects/DAPM/new2/organizations/orgB/src/main/java/templates/behavioural-patterns-conformance.jar";
                     ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
                     processBuilder.redirectErrorStream(true);
                     process = processBuilder.start();

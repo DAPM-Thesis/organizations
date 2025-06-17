@@ -21,14 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static guru.nidi.graphviz.engine.Format.SVG;
 import static guru.nidi.graphviz.engine.Graphviz.fromGraph;
 import static guru.nidi.graphviz.model.Factory.*;
 
 public class PetriNetSink extends Sink {
+    private static volatile boolean shutdownScheduled = false;
+    private static final long START_TIME = System.currentTimeMillis();
     public PetriNetSink(Configuration configuration) {
         super(configuration);
+        //scheduleAutoTerminate();
     }
 
     @Override
@@ -99,5 +105,43 @@ public class PetriNetSink extends Sink {
             }
         }
         return dotGraph;
+    }
+
+    private void scheduleAutoTerminate() {
+        if (shutdownScheduled) {
+            return;
+        }
+        shutdownScheduled = true;
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "PetriNetSink-AutoShutdown");
+            t.setDaemon(true);
+            return t;
+        });
+
+        long now = System.currentTimeMillis();
+        long elapsedSinceStart = now - START_TIME;
+        long delayUntilThirtySeconds = 30_000 - elapsedSinceStart;
+        if (delayUntilThirtySeconds < 0) {
+            delayUntilThirtySeconds = 0;
+        }
+
+        scheduler.schedule(() -> {
+            try {
+                System.out.println("PETRINETSINK- 30 s passed—sleeping for another 30 s to trigger missed‐heartbeat…");
+                Thread.sleep(30_000);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+
+            System.out.println("60 s since start—calling terminate() on PetriNetSink.");
+            boolean didTerminate = this.terminate();
+            if (didTerminate) {
+                System.out.println("PetriNetSink terminated successfully after hold.");
+            } else {
+                System.err.println("PetriNetSink failed to terminate.");
+            }
+        }, delayUntilThirtySeconds, TimeUnit.MILLISECONDS);
     }
 }

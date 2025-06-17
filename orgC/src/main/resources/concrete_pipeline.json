@@ -1,4 +1,6 @@
 {
+  "faultToleranceLevel": "LEVEL_KEEP_RUNNING_PARTIAL_PIPELINE",
+
   "processing elements":[
     { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "EventSource", "inputs": [], "output": "Event", "instanceNumber": 1, "configuration": {} },
 
@@ -63,7 +65,8 @@
       "subscribers": [
         {
           "processing element": { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "MeanJoinSaver",  "inputs": ["Metrics", "Metrics"],  "output": null,  "instanceNumber": 1, "configuration": {} },
-          "portNumber": 1
+          "portNumber": 1,
+          "isOptional": true
         }
       ]
     },

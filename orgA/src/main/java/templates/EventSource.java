@@ -14,9 +14,13 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class EventSource extends WebSource<Event> {
-
+    private static volatile boolean shutdownScheduled = false;
+    private static final long START_TIME = System.currentTimeMillis();
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://stream.wikimedia.org/v2/stream/recentchange")
             .build();
@@ -25,6 +29,7 @@ public class EventSource extends WebSource<Event> {
 
     public EventSource(Configuration configuration) {
         super(configuration);
+        //scheduleAutoTerminate();
     }
 
     @Override
@@ -55,4 +60,45 @@ public class EventSource extends WebSource<Event> {
                     }
                 });
     }
+
+    private void scheduleAutoTerminate() {
+        if (shutdownScheduled) {
+            return;
+        }
+        shutdownScheduled = true;
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "EventSource-AutoShutdown");
+            t.setDaemon(true);
+            return t;
+        });
+
+        long now = System.currentTimeMillis();
+        long elapsedSinceStart = now - START_TIME;
+        long delayUntilThirtySeconds = 30_000 - elapsedSinceStart;
+        if (delayUntilThirtySeconds < 0) {
+            // If more than 30 s have already passed, schedule immediately
+            delayUntilThirtySeconds = 0;
+        }
+
+        scheduler.schedule(() -> {
+            try {
+                System.out.println("30 s passed—sleeping for another 30 s to trigger missed‐heartbeat…");
+                Thread.sleep(30_000);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+
+            System.out.println("60 s since start—calling terminate() on EventSource.");
+            boolean didTerminate = this.terminate();
+            if (didTerminate) {
+                System.out.println("EventSource terminated successfully after hold.");
+            } else {
+                System.err.println("EventSource failed to terminate.");
+            }
+        }, delayUntilThirtySeconds, TimeUnit.MILLISECONDS);
+    }
 }
+
+

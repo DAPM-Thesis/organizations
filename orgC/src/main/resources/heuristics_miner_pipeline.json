@@ -1,4 +1,5 @@
 {
+  "faultToleranceLevel": "LEVEL_NOTIFY_ONLY",
   "processing elements":[
     { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "EventSource", "inputs": [], "output": "Event", "instanceNumber": 1, "configuration": {} },
     { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "LanguageFilter", "inputs": ["Event"], "output": "Event", "instanceNumber": 1, "configuration": {"language": "en"} },

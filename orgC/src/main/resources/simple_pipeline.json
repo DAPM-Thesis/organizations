@@ -1,4 +1,6 @@
 {
+  "faultToleranceLevel": "LEVEL_TERMINATE_PIPELINE",
+
   "processing elements":[
     { "organizationID": "orgA", "hostURL": "http://localhost:8082", "templateID": "SimpleSource", "inputs": [], "output": "Event", "instanceNumber": 1, "configuration": {} },
     { "organizationID": "orgB", "hostURL": "http://localhost:8083", "templateID": "SimpleOperator",  "inputs": ["Event"],  "output": "Event",  "instanceNumber": 1, "configuration": {} },
