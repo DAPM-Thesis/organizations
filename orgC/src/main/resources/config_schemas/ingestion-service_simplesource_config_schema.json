@@ -20,7 +20,12 @@
     "filters": {
       "type": "object",
       "description": "A map of filter‐name and filter‐value (all strings)",
-      "additionalProperties": { "type": "string" }
+      "additionalProperties": {
+        "anyOf": [
+          { "type": "string" },
+          { "type": "array", "items": { "type": "string" } }
+        ]
+      }
     },
 
     "attributeMapping": {

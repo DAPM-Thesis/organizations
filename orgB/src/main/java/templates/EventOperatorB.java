@@ -14,7 +14,8 @@ import java.util.*;
 
 public class EventOperatorB extends SimpleOperator<Event> {
 
-private final SimpleHeuristicMiner miner = new SimpleHeuristicMiner();
+private final SimpleHeuristicMiner minerEnwiki = new SimpleHeuristicMiner();
+    private final SimpleHeuristicMiner minerRuwiki = new SimpleHeuristicMiner();
     public EventOperatorB(Configuration configuration) {
         super(configuration);
     }
@@ -30,21 +31,21 @@ private final SimpleHeuristicMiner miner = new SimpleHeuristicMiner();
     protected Event process(Message message, int portNumber) {
         System.out.println("Event Arrived!!!");
         Event e = (Event) message;
-        // 1) Update the in‐process miner
-        miner.addEvent(e);
-
-        // 2) Fetch metrics
-        List<DirectFollow> metrics = miner.getMetrics();
+        // 1) Update the in‐process
+        List<DirectFollow> metrics = new ArrayList<>();
+        if (e.getCaseID().equals("enwiki")){
+            minerEnwiki.addEvent(e);
+            metrics = minerEnwiki.getMetrics();
+        }
+        else {
+            minerRuwiki.addEvent(e);
+            metrics = minerRuwiki.getMetrics();
+        }
         long timestamp = Instant.parse(e.getTimestamp()).toEpochMilli();
         // 3) Print + attach
-        System.out.println("Heuristic‐miner metrics:");
+        System.out.println("Heuristic‐miner calculating metrics!!");
         List<Map<String, Object>> arcList = new ArrayList<>();
         for (DirectFollow m : metrics) {
-            System.out.println("  → " + m);
-            System.out.println("hm_from:" + m.from);
-            System.out.println("hm_to-" + m.to);
-            System.out.println("frequency-" + m.frequency);
-            System.out.println("dependency-" + m.dependency);
             Map<String, Object> arc = new HashMap<>();
             arc.put("arc_from", m.from);
             arc.put("arc_to", m.to);
@@ -59,7 +60,6 @@ private final SimpleHeuristicMiner miner = new SimpleHeuristicMiner();
         } catch (JsonProcessingException ex) {
             throw new RuntimeException(ex);
         }
-        System.out.println("Payload:" + payload);
         Set<Attribute<?>> newAttributes = new HashSet<>(e.getAttributes());
         Attribute<String> miningMetrics = new Attribute<>("mining_metrics", payload);
         newAttributes.add(miningMetrics);
@@ -69,6 +69,7 @@ private final SimpleHeuristicMiner miner = new SimpleHeuristicMiner();
                 e.getTimestamp(),
                 newAttributes
         );
+        System.out.println("Sending to the Sink!!!");
         return newEvent;
     }
     @Override

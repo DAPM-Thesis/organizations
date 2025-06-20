@@ -17,7 +17,12 @@
     <properties>
         <java.version>21</java.version>
     </properties>
-
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -46,8 +51,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-    </dependencies>
 
+    </dependencies>
     <build>
         <plugins>
             <plugin>

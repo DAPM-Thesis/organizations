@@ -12,8 +12,8 @@ services:
       - kafka-cluster
     restart: always
     ports:
-      - "3000:8080"
+      - "3030:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-A:9092,kafka-B:9082, kafka-C:9072
-      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-1:2181, zookeeper-2:2181, zookeeper-3:2181
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS:  kafka-A:9092,kafka-B:9082,kafka-C:9072,kafka-sink:9062,kafka-ingestion:9012
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181,zookeeper-sink:2181,zookeeper-ingestion:2181
